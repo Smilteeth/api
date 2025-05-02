@@ -120,7 +120,7 @@ export const odontogram_table = sqliteTable('odontogram', {
 
 export const transaction_table = sqliteTable('Transaction', {
 	transaction_id: int('transaction_id').primaryKey({ autoIncrement: true }),
-	ammount: int('ammount'),
+	ammount: real('ammount'),
 	creation_date: text('creation_date').default(sql`(CURRENT_DATE)`)
 });
 
@@ -132,7 +132,7 @@ export const brush_table = sqliteTable('Brush', {
 export const mascot_item_table = sqliteTable('MascotItem', {
 	mascot_item_id: int('mascot_item_id').primaryKey({ autoIncrement: true }),
 	name: text('name'),
-	price: int('price'),
+	price: real('price'),
 	content_url: text('content_url'),
 	creation_date: text('creation_date').default(sql`(CURRENT_DATE)`),
 	last_modification_date: text('last_modification_date', { length: 26 }),
@@ -144,7 +144,7 @@ export const items_owned_table = sqliteTable('ItemsOwned', {
 	mascot_item_id: int('mascot_item_id').references(() => mascot_item_table.mascot_item_id),
 	child_id: int('child_id').references(() => child_table.child_id),
 	purchase_date: text('purchase_date').default(sql`(CURRENT_DATE)`),
-	ammount: int('ammount')
+	price: real('price')
 });
 
 export const course_table = sqliteTable('Course', {
@@ -161,7 +161,7 @@ export const lesson_table = sqliteTable('Lesson', {
 	course_id: int('course_id').references(() => course_table.course_id),
 	name: text('name'),
 	content_url: text('content_url'),
-	duration: int('duration'),
+	duration: real('duration'),
 	creation_date: text('creation_date').default(sql`(CURRENT_DATE)`),
 	last_modification_date: text('last_modification_date', { length: 26 }),
 	is_active: int('is_active', { mode: 'boolean' }).default(true)
