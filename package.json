@@ -1,36 +1,38 @@
 {
-    "name": "smiltheet-api",
-    "type": "module",
-    "authors": [
-        {
-            "name": "Rafael Beltran",
-            "email": "rafabeltrans17@gmail.com",
-            "github": "https://github.com/rafabelts"
-        },
-        {
-            "name": "Ethan Sarricolea",
-            "email": "",
-            "github": ""
-        }
-    ],
-    "scripts": {
-        "generate-db": "npx drizzle-kit generate",
-        "migrate-db": "npx drizzle-kit migrate",
-        "dev": "wrangler dev",
-        "deploy": "wrangler deploy --minify",
-        "cf-typegen": "wrangler types --env-interface CloudflareBindings",
-        "format": "pnpm exec prettier . --write"
-    },
-    "dependencies": {
-        "dotenv": "^16.5.0",
-        "drizzle-orm": "^0.43.1",
-        "hono": "^4.7.8",
-        "prettier": "^3.5.3"
-    },
-    "devDependencies": {
-        "@cloudflare/workers-types": "^4.20250430.0",
-        "drizzle-kit": "^0.31.0",
-        "tsx": "^4.19.4",
-        "wrangler": "^4.4.0"
-    }
+	"name": "smiltheet-api",
+	"type": "module",
+	"authors": [
+		{
+			"name": "Rafael Beltran",
+			"email": "rafabeltrans17@gmail.com",
+			"github": "https://github.com/rafabelts"
+		},
+		{
+			"name": "Ethan Sarricolea",
+			"email": "",
+			"github": ""
+		}
+	],
+	"scripts": {
+		"db:generate": "npx drizzle-kit generate",
+		"db:migrate": "npx drizzle-kit migrate",
+		"db:push": "drizzle-kit push",
+		"db:studio": "drizzle-kit studio",
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy --minify",
+		"cf-typegen": "wrangler types --env-interface CloudflareBindings",
+		"format": "pnpm exec prettier . --write"
+	},
+	"dependencies": {
+		"dotenv": "^16.5.0",
+		"drizzle-orm": "^0.43.1",
+		"hono": "^4.7.8",
+		"prettier": "^3.5.3"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20250430.0",
+		"drizzle-kit": "^0.31.0",
+		"tsx": "^4.19.4",
+		"wrangler": "^4.4.0"
+	}
 }
