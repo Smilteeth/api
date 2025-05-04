@@ -8,8 +8,6 @@ import { sqliteTable, int, text, real } from 'drizzle-orm/sqlite-core';
  *  dates are text because sqlite not supports datetime type
  *  booleans are int because sqlite not supports booleans
  *
- *
- *
  *  made by Rafael Beltran
  */
 
@@ -182,14 +180,14 @@ export const consentFormTable = sqliteTable('ConsentForm', {
 	patient_signature: text('patient_signature')
 });
 
-export const radiologyTestsTable = sqliteTable('RadiologyTests', {
+export const radiologyTestTable = sqliteTable('RadiologyTest', {
 	id: int('id').primaryKey({ autoIncrement: true }),
 	patient_id: int('patient_id').references(() => childTable.child_id),
 	test_type: text('test_type'),
 	test_results: text('test_results')
 });
 
-export const medicalAlertsTable = sqliteTable('MedicalAlerts', {
+export const medicalAlertTable = sqliteTable('MedicalAlert', {
 	id: int('id').primaryKey({ autoIncrement: true }),
 	patient_id: int('patient_id').references(() => childTable.child_id),
 	alert_type: text('alert_type'),
@@ -239,7 +237,7 @@ export const mascotItemTable = sqliteTable('MascotItem', {
 	is_active: int('is_active', { mode: 'boolean' }).default(true)
 });
 
-export const items_owned_table = sqliteTable('ItemsOwned', {
+export const itemsOwnedTable = sqliteTable('ItemsOwned', {
 	items_owned_id: int('items_owned_id').primaryKey({ autoIncrement: true }),
 	mascot_item_id: int('mascot_item_id').references(() => mascotItemTable.mascot_item_id),
 	child_id: int('child_id').references(() => childTable.child_id),
@@ -267,7 +265,7 @@ export const lessonTable = sqliteTable('Lesson', {
 	is_active: int('is_active', { mode: 'boolean' }).default(true)
 });
 
-export const childLessonTable = sqliteTable('ChildLessons', {
+export const childLessonTable = sqliteTable('ChildLesson', {
 	child_lesson_id: int('child_lesson_id').primaryKey({ autoIncrement: true }),
 	lesson_id: int('lesson_id').references(() => lessonTable.lesson_id),
 	child_id: int('child_id').references(() => childTable.child_id),
