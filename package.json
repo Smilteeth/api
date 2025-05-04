@@ -8,10 +8,10 @@
 			"github": "https://github.com/rafabelts"
 		},
 		{
-			"name": "Ethan Sarricolea",
-			"email": "",
-			"github": ""
-		}
+            "name": "Ethan Sarricolea",
+            "email": "esarricolea@gmail.com",
+            "github": "https://github.com/Ethan-Sarricolea"
+        }
 	],
 	"scripts": {
 		"db:generate": "npx drizzle-kit generate",
@@ -35,4 +35,3 @@
 		"tsx": "^4.19.4",
 		"wrangler": "^4.4.0"
 	}
-}
