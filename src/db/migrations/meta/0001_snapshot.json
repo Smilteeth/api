@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d839fb7f-5b1c-400e-95ad-9837fec423a1",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "8830d866-467c-4c0f-a87e-1ef8bae566a3",
+  "prevId": "d839fb7f-5b1c-400e-95ad-9837fec423a1",
   "tables": {
     "Appointment": {
       "name": "Appointment",
@@ -109,6 +109,13 @@
           "notNull": true,
           "autoincrement": true
         },
+        "child_id": {
+          "name": "child_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "brush_datetime": {
           "name": "brush_datetime",
           "type": "text(26)",
@@ -118,7 +125,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Brush_child_id_Child_child_id_fk": {
+          "name": "Brush_child_id_Child_child_id_fk",
+          "tableFrom": "Brush",
+          "tableTo": "Child",
+          "columnsFrom": [
+            "child_id"
+          ],
+          "columnsTo": [
+            "child_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -585,6 +606,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "dentist_id": {
+          "name": "dentist_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "consent_given": {
           "name": "consent_given",
           "type": "integer",
@@ -622,6 +650,19 @@
           "tableTo": "User",
           "columnsFrom": [
             "patient_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ConsentForm_dentist_id_Dentist_user_id_fk": {
+          "name": "ConsentForm_dentist_id_Dentist_user_id_fk",
+          "tableFrom": "ConsentForm",
+          "tableTo": "Dentist",
+          "columnsFrom": [
+            "dentist_id"
           ],
           "columnsTo": [
             "user_id"
@@ -1192,23 +1233,9 @@
           "notNull": true,
           "autoincrement": true
         },
-        "theet": {
-          "name": "theet",
+        "clinic_history_id": {
+          "name": "clinic_history_id",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "theet_face": {
-          "name": "theet_face",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "treatment": {
-          "name": "treatment",
-          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1245,7 +1272,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Odontogram_clinic_history_id_ClinicHistory_clinic_history_id_fk": {
+          "name": "Odontogram_clinic_history_id_ClinicHistory_clinic_history_id_fk",
+          "tableFrom": "Odontogram",
+          "tableTo": "ClinicHistory",
+          "columnsFrom": [
+            "clinic_history_id"
+          ],
+          "columnsTo": [
+            "clinic_history_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -1439,6 +1480,95 @@
           ],
           "columnsTo": [
             "appointment_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "Theet": {
+      "name": "Theet",
+      "columns": {
+        "theet_id": {
+          "name": "theet_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "odontogram_id": {
+          "name": "odontogram_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "theet": {
+          "name": "theet",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "theet_face": {
+          "name": "theet_face",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "treatment": {
+          "name": "treatment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "creation_date": {
+          "name": "creation_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(CURRENT_DATE)"
+        },
+        "last_modification_date": {
+          "name": "last_modification_date",
+          "type": "text(26)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Theet_odontogram_id_Odontogram_odontogram_id_fk": {
+          "name": "Theet_odontogram_id_Odontogram_odontogram_id_fk",
+          "tableFrom": "Theet",
+          "tableTo": "Odontogram",
+          "columnsFrom": [
+            "odontogram_id"
+          ],
+          "columnsTo": [
+            "odontogram_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"

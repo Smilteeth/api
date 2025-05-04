@@ -1,39 +1,39 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "smiltheet-api",
-	"main": "src/index.ts",
-	"compatibility_date": "2025-04-29",
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "dev-smiltheet",
-			"database_id": "ca1b481b-3a01-44c2-858d-9c61dc4da7b4"
-		}
-	]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "smiltheet-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-29",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dev-smiltheet",
+      "database_id": "12f74eaa-c75e-4470-87f3-ef298da6f0d6",
+    },
+  ],
 
-	// "compatibility_flags": [
-	//   "nodejs_compat"
-	// ],
-	// "vars": {
-	//   "MY_VAR": "my-variable"
-	// },
-	// "kv_namespaces": [
-	//   {
-	//     "binding": "MY_KV_NAMESPACE",
-	//     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-	//   }
-	// ],
-	// "r2_buckets": [
-	//   {
-	//     "binding": "MY_BUCKET",
-	//     "bucket_name": "my-bucket"
-	//   }
-	// ],
-	// "ai": {
-	//   "binding": "AI"
-	// },
-	// "observability": {
-	//   "enabled": true,
-	//   "head_sampling_rate": 1
-	// }
+  // "compatibility_flags": [
+  //   "nodejs_compat"
+  // ],
+  // "vars": {
+  //   "MY_VAR": "my-variable"
+  // },
+  // "kv_namespaces": [
+  //   {
+  //     "binding": "MY_KV_NAMESPACE",
+  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  //   }
+  // ],
+  // "r2_buckets": [
+  //   {
+  //     "binding": "MY_BUCKET",
+  //     "bucket_name": "my-bucket"
+  //   }
+  // ],
+  // "ai": {
+  //   "binding": "AI"
+  // },
+  // "observability": {
+  //   "enabled": true,
+  //   "head_sampling_rate": 1
+  // }
 }

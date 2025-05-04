@@ -1,23 +1,23 @@
 export default {
-	arrowParens: 'always',
-	bracketSpacing: true,
-	insertPragma: false,
-	printWidth: 120,
-	proseWrap: 'preserve',
-	quoteProps: 'as-needed',
-	requirePragma: false,
-	semi: true,
-	singleQuote: true,
-	tabWidth: 2,
-	trailingComma: 'none',
-	useTabs: true,
-	endOfLine: 'auto',
-	overrides: [
-		{
-			files: '.prettierrc',
-			options: {
-				parser: 'typescript'
-			}
-		}
-	]
+  arrowParens: "always",
+  bracketSpacing: true,
+  insertPragma: false,
+  printWidth: 120,
+  proseWrap: "preserve",
+  quoteProps: "as-needed",
+  requirePragma: false,
+  semi: true,
+  singleQuote: true,
+  tabWidth: 2,
+  trailingComma: "none",
+  useTabs: true,
+  endOfLine: "auto",
+  overrides: [
+    {
+      files: ".prettierrc",
+      options: {
+        parser: "typescript",
+      },
+    },
+  ],
 };
