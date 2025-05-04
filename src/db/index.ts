@@ -1,11 +1,11 @@
-import { drizzle } from "drizzle-orm/d1";
+import { drizzle } from 'drizzle-orm/d1';
+
+import * as schema from './schema';
 
 export interface Env {
-  DB: D1Database;
+	DB: D1Database;
 }
 
-export default {
-  async fetch(request: Request, env: Env) {
-    const db = drizzle(env.DB);
-  },
+export const db = (env: Env) => {
+	return drizzle(env.DB, { schema });
 };
