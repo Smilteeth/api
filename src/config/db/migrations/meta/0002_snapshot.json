@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d839fb7f-5b1c-400e-95ad-9837fec423a1",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "a9689f1b-d8c7-4cb3-9ed7-9cab1bc2ea5c",
+  "prevId": "8830d866-467c-4c0f-a87e-1ef8bae566a3",
   "tables": {
     "Appointment": {
       "name": "Appointment",
@@ -32,14 +32,14 @@
           "name": "reason",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "appointment_datetime": {
           "name": "appointment_datetime",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -109,16 +109,37 @@
           "notNull": true,
           "autoincrement": true
         },
+        "child_id": {
+          "name": "child_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "brush_datetime": {
           "name": "brush_datetime",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Brush_child_id_Child_child_id_fk": {
+          "name": "Brush_child_id_Child_child_id_fk",
+          "tableFrom": "Brush",
+          "tableTo": "Child",
+          "columnsFrom": [
+            "child_id"
+          ],
+          "columnsTo": [
+            "child_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -137,14 +158,14 @@
           "name": "reason",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "date_cancelled": {
           "name": "date_cancelled",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "(CURRENT_DATE)"
         }
@@ -190,14 +211,14 @@
           "name": "type",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "description": {
           "name": "description",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -221,8 +242,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "ChildLessons": {
-      "name": "ChildLessons",
+    "ChildLesson": {
+      "name": "ChildLesson",
       "columns": {
         "child_lesson_id": {
           "name": "child_lesson_id",
@@ -249,22 +270,22 @@
           "name": "date_watched",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "status": {
           "name": "status",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "ChildLessons_lesson_id_Lesson_lesson_id_fk": {
-          "name": "ChildLessons_lesson_id_Lesson_lesson_id_fk",
-          "tableFrom": "ChildLessons",
+        "ChildLesson_lesson_id_Lesson_lesson_id_fk": {
+          "name": "ChildLesson_lesson_id_Lesson_lesson_id_fk",
+          "tableFrom": "ChildLesson",
           "tableTo": "Lesson",
           "columnsFrom": [
             "lesson_id"
@@ -275,9 +296,9 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "ChildLessons_child_id_Child_child_id_fk": {
-          "name": "ChildLessons_child_id_Child_child_id_fk",
-          "tableFrom": "ChildLessons",
+        "ChildLesson_child_id_Child_child_id_fk": {
+          "name": "ChildLesson_child_id_Child_child_id_fk",
+          "tableFrom": "ChildLesson",
           "tableTo": "Child",
           "columnsFrom": [
             "child_id"
@@ -314,49 +335,49 @@
           "name": "name",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "last_name": {
           "name": "last_name",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "gender": {
           "name": "gender",
           "type": "text(1)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "birth_date": {
           "name": "birth_date",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "morning_brushing_time": {
           "name": "morning_brushing_time",
           "type": "text(8)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "afternoon_brushing_time": {
           "name": "afternoon_brushing_time",
           "type": "text(8)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "night_brushing_time": {
           "name": "night_brushing_time",
           "type": "text(8)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -424,7 +445,7 @@
           "name": "url",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -492,28 +513,28 @@
           "name": "diagnostic",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "proposed_treatment": {
           "name": "proposed_treatment",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "performed_treatment": {
           "name": "performed_treatment",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "description": {
           "name": "description",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -571,8 +592,8 @@
     "ConsentForm": {
       "name": "ConsentForm",
       "columns": {
-        "id": {
-          "name": "id",
+        "consent_form_id": {
+          "name": "consent_form_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true,
@@ -585,32 +606,39 @@
           "notNull": false,
           "autoincrement": false
         },
+        "dentist_id": {
+          "name": "dentist_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "consent_given": {
           "name": "consent_given",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "consent_details": {
           "name": "consent_details",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "dentist_signature": {
           "name": "dentist_signature",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
-        "patient_signature": {
-          "name": "patient_signature",
+        "father_signature": {
+          "name": "father_signature",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -622,6 +650,19 @@
           "tableTo": "User",
           "columnsFrom": [
             "patient_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "ConsentForm_dentist_id_Dentist_user_id_fk": {
+          "name": "ConsentForm_dentist_id_Dentist_user_id_fk",
+          "tableFrom": "ConsentForm",
+          "tableTo": "Dentist",
+          "columnsFrom": [
+            "dentist_id"
           ],
           "columnsTo": [
             "user_id"
@@ -648,7 +689,7 @@
           "name": "name",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "description": {
@@ -702,7 +743,7 @@
           "name": "professional_license",
           "type": "text(10)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "university": {
@@ -730,39 +771,47 @@
           "name": "service_start_time",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "service_end_time": {
           "name": "service_end_time",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "phone_number": {
           "name": "phone_number",
           "type": "text(10)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "latitude": {
           "name": "latitude",
           "type": "real",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "longitude": {
           "name": "longitude",
           "type": "real",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "Dentist_professional_license_unique": {
+          "name": "Dentist_professional_license_unique",
+          "columns": [
+            "professional_license"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "Dentist_user_id_User_user_id_fk": {
           "name": "Dentist_user_id_User_user_id_fk",
@@ -796,14 +845,14 @@
           "name": "help_device",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "help_device_description": {
           "name": "help_device_description",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -849,7 +898,7 @@
           "name": "price",
           "type": "real",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -907,21 +956,21 @@
           "name": "name",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "content_url": {
           "name": "content_url",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "duration": {
           "name": "duration",
           "type": "real",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -982,21 +1031,21 @@
           "name": "name",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "price": {
           "name": "price",
           "type": "real",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "content_url": {
           "name": "content_url",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -1029,11 +1078,11 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "MedicalAlerts": {
-      "name": "MedicalAlerts",
+    "MedicalAlert": {
+      "name": "MedicalAlert",
       "columns": {
-        "id": {
-          "name": "id",
+        "medical_alert_id": {
+          "name": "medical_alert_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true,
@@ -1050,7 +1099,7 @@
           "name": "alert_type",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "description": {
@@ -1063,9 +1112,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "MedicalAlerts_patient_id_Child_child_id_fk": {
-          "name": "MedicalAlerts_patient_id_Child_child_id_fk",
-          "tableFrom": "MedicalAlerts",
+        "MedicalAlert_patient_id_Child_child_id_fk": {
+          "name": "MedicalAlert_patient_id_Child_child_id_fk",
+          "tableFrom": "MedicalAlert",
           "tableTo": "Child",
           "columnsFrom": [
             "patient_id"
@@ -1084,8 +1133,8 @@
     "MedicalHistory": {
       "name": "MedicalHistory",
       "columns": {
-        "id": {
-          "name": "id",
+        "medical_history_id": {
+          "name": "medical_history_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true,
@@ -1130,35 +1179,35 @@
           "name": "disease_start_date",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "symptoms": {
           "name": "symptoms",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "progression": {
           "name": "progression",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "treatment_used": {
           "name": "treatment_used",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "current_state": {
           "name": "current_state",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -1192,23 +1241,9 @@
           "notNull": true,
           "autoincrement": true
         },
-        "theet": {
-          "name": "theet",
+        "clinic_history_id": {
+          "name": "clinic_history_id",
           "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "theet_face": {
-          "name": "theet_face",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "treatment": {
-          "name": "treatment",
-          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -1245,7 +1280,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "Odontogram_clinic_history_id_ClinicHistory_clinic_history_id_fk": {
+          "name": "Odontogram_clinic_history_id_ClinicHistory_clinic_history_id_fk",
+          "tableFrom": "Odontogram",
+          "tableTo": "ClinicHistory",
+          "columnsFrom": [
+            "clinic_history_id"
+          ],
+          "columnsTo": [
+            "clinic_history_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -1253,8 +1302,8 @@
     "PhysicalExamination": {
       "name": "PhysicalExamination",
       "columns": {
-        "id": {
-          "name": "id",
+        "physical_examination_id": {
+          "name": "physical_examination_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true,
@@ -1271,63 +1320,63 @@
           "name": "pulse",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "blood_pressure": {
           "name": "blood_pressure",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "weight": {
           "name": "weight",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "temperature": {
           "name": "temperature",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "respiratory_rate": {
           "name": "respiratory_rate",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "tmj_exam": {
           "name": "tmj_exam",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "muscle_exam": {
           "name": "muscle_exam",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "soft_tissue_exam": {
           "name": "soft_tissue_exam",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "periodontal_exam": {
           "name": "periodontal_exam",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -1351,11 +1400,11 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "RadiologyTests": {
-      "name": "RadiologyTests",
+    "RadiologyTest": {
+      "name": "RadiologyTest",
       "columns": {
-        "id": {
-          "name": "id",
+        "radiology_test_id": {
+          "name": "radiology_test_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true,
@@ -1372,22 +1421,22 @@
           "name": "test_type",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "test_results": {
           "name": "test_results",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "RadiologyTests_patient_id_Child_child_id_fk": {
-          "name": "RadiologyTests_patient_id_Child_child_id_fk",
-          "tableFrom": "RadiologyTests",
+        "RadiologyTest_patient_id_Child_child_id_fk": {
+          "name": "RadiologyTest_patient_id_Child_child_id_fk",
+          "tableFrom": "RadiologyTest",
           "tableTo": "Child",
           "columnsFrom": [
             "patient_id"
@@ -1417,14 +1466,14 @@
           "name": "reason",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "rescheduled_date": {
           "name": "rescheduled_date",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -1448,6 +1497,95 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "Theet": {
+      "name": "Theet",
+      "columns": {
+        "theet_id": {
+          "name": "theet_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "odontogram_id": {
+          "name": "odontogram_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "theet": {
+          "name": "theet",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "theet_face": {
+          "name": "theet_face",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "treatment": {
+          "name": "treatment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "creation_date": {
+          "name": "creation_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(CURRENT_DATE)"
+        },
+        "last_modification_date": {
+          "name": "last_modification_date",
+          "type": "text(26)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "Theet_odontogram_id_Odontogram_odontogram_id_fk": {
+          "name": "Theet_odontogram_id_Odontogram_odontogram_id_fk",
+          "tableFrom": "Theet",
+          "tableTo": "Odontogram",
+          "columnsFrom": [
+            "odontogram_id"
+          ],
+          "columnsTo": [
+            "odontogram_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "Transaction": {
       "name": "Transaction",
       "columns": {
@@ -1462,7 +1600,7 @@
           "name": "ammount",
           "type": "real",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -1483,8 +1621,8 @@
     "TreatmentPlan": {
       "name": "TreatmentPlan",
       "columns": {
-        "id": {
-          "name": "id",
+        "treatment_plan_id": {
+          "name": "treatment_plan_id",
           "type": "integer",
           "primaryKey": true,
           "notNull": true,
@@ -1501,21 +1639,21 @@
           "name": "diagnosis",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "prognosis": {
           "name": "prognosis",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "treatment_description": {
           "name": "treatment_description",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
@@ -1553,35 +1691,35 @@
           "name": "name",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "last_name": {
           "name": "last_name",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "birth_date": {
           "name": "birth_date",
           "type": "text(26)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "email": {
           "name": "email",
           "type": "text(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "password": {
           "name": "password",
           "type": "text(14)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "creation_date": {
@@ -1603,7 +1741,7 @@
           "name": "type",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "is_active": {
@@ -1615,7 +1753,15 @@
           "default": true
         }
       },
-      "indexes": {},
+      "indexes": {
+        "User_email_unique": {
+          "name": "User_email_unique",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
@@ -1626,8 +1772,20 @@
   "enums": {},
   "_meta": {
     "schemas": {},
-    "tables": {},
-    "columns": {}
+    "tables": {
+      "\"ChildLessons\"": "\"ChildLesson\"",
+      "\"MedicalAlerts\"": "\"MedicalAlert\"",
+      "\"RadiologyTests\"": "\"RadiologyTest\""
+    },
+    "columns": {
+      "\"ConsentForm\".\"id\"": "\"ConsentForm\".\"consent_form_id\"",
+      "\"ConsentForm\".\"patient_signature\"": "\"ConsentForm\".\"father_signature\"",
+      "\"MedicalAlert\".\"id\"": "\"MedicalAlert\".\"medical_alert_id\"",
+      "\"MedicalHistory\".\"id\"": "\"MedicalHistory\".\"medical_history_id\"",
+      "\"PhysicalExamination\".\"id\"": "\"PhysicalExamination\".\"physical_examination_id\"",
+      "\"RadiologyTest\".\"id\"": "\"RadiologyTest\".\"radiology_test_id\"",
+      "\"TreatmentPlan\".\"id\"": "\"TreatmentPlan\".\"treatment_plan_id\""
+    }
   },
   "internal": {
     "indexes": {}
