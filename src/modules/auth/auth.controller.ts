@@ -23,7 +23,6 @@ export class AuthController {
 				throw error;
 			}
 
-
 			if (errorMessage.includes('UNIQUE constraint failed: User.email')) {
 				throw new HTTPException(400, {
 					message: 'Email already in use',
@@ -68,31 +67,6 @@ export class AuthController {
 			});
 		}
 	}
-
-    async logout(c: Context) {
-        try {
-            
-            const authHeader = c.req.header('Authorization')
-            
-            const token = authHeader?.split(" ")[1];
-
-            return c.json({
-                message: token ?? ""
-            })
-        
-
-        } catch(error){
-            const errorMessage = error instanceof Error ? error.message : String(error);
-
-            throw new HTTPException(500, {
-                message: 'Server error',
-                cause: errorMessage
-            });
-        }
-
-    }
-
-    
 
 	private isValidUserData(data: Partial<UserTableTypes>, mode: 'signup' | 'login'): boolean {
 		const fieldSets = {

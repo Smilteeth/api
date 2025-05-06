@@ -35,7 +35,7 @@ export class AuthService {
 				throw new HTTPException(404, { message: 'User not found' });
 			}
 
-            const isValid = await new Validator().password(data.password, user.password);
+			const isValid = await new Validator().validatePassword(data.password, user.password);
 
 			if (!isValid) {
 				throw new HTTPException(401, { message: 'Invalid password' });
