@@ -1,18 +1,14 @@
-import { Hono } from 'hono';
+import apiRouter from './routes';
+import authRouter from './modules/auth/auth.route';
+import { Context, Hono } from 'hono';
+import { authMiddleware } from './middleware/auth';
 
-const app = new Hono().basePath('/api');
+const app = new Hono();
 
-app.get('/', (c) => {
-	return c.json({
-		message: 'Bienvenido a la API de smiltheet'
-	});
-});
+app.use('/api/*', authMiddleware);
 
-app.get('/greet', (c) => {
-	const name = c.req.query('name') || 'Mundo';
-	return c.json({
-		message: `Hola, ${name}!`
-	});
-});
+app.route('/auth', authRouter);
+
+app.route('/api', apiRouter);
 
 export default app;

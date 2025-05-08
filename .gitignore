@@ -11,9 +11,12 @@ dist/
 .idea/usage.statistics.xml
 .idea/shelf
 
+package-lock.json
+pnpm-lock.json
+
 # deps
 node_modules/
-.wrangler
+.wrangler/
 
 # env
 .env
@@ -23,6 +26,7 @@ node_modules/
 # logs
 logs/
 *.log
+.wrangler/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -30,4 +34,4 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # misc
-.DS_Store
+.DS_Store/
