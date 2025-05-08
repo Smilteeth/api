@@ -5,8 +5,6 @@ import { authMiddleware } from './middleware/auth';
 
 const app = new Hono();
 
-app.use('/api/*', authMiddleware);
-
 app.route('/auth', authRouter);
 
 app.route('/api', apiRouter);
