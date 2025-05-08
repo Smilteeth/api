@@ -56,7 +56,7 @@ export class AuthController {
 					token: token,
 					expiration: exp
 				},
-				200
+				202
 			);
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : String(error);
