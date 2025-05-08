@@ -1,7 +1,8 @@
 import { Context } from 'hono';
 import { LogInData, UserTableTypes } from './auth.types';
 import { HTTPException } from 'hono/http-exception';
-import { authServiceFactory } from './auth.service.factory';
+import { ServiceFactory } from '../../utils/service.factory';
+import { AuthService } from './auth.service';
 
 export class AuthController {
 	async signUp(c: Context) {
@@ -12,8 +13,9 @@ export class AuthController {
 				throw new HTTPException(400, { message: 'Missing attribute' });
 			}
 
-			const authService = authServiceFactory(c);
-			await authService.create(data);
+			const authService = new ServiceFactory(c).createService('auth');
+
+			await (authService as AuthService).create(data);
 
 			return c.json({ message: 'User created' }, 201);
 		} catch (error) {
@@ -45,8 +47,9 @@ export class AuthController {
 				throw new HTTPException(400, { message: 'Missing attribute' });
 			}
 
-			const authService = authServiceFactory(c);
-			const { token, exp } = await authService.findIdByEmail(data);
+			const authService = new ServiceFactory(c).createService('auth');
+
+			const { token, exp } = await (authService as AuthService).findIdByEmail(data);
 
 			return c.json(
 				{
