@@ -5,7 +5,6 @@ import { LogInData, UserTableTypes } from './auth.types';
 import { SignatureKey } from 'hono/utils/jwt/jws';
 import { JwtUtil } from '../../utils/generateJwt';
 import { Validator } from '../../utils/validator';
-import { is } from 'drizzle-orm';
 
 export class AuthService {
 	private authDao: AuthDao;

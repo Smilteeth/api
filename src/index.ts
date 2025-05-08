@@ -12,7 +12,3 @@ app.route('/auth', authRouter);
 app.route('/api', apiRouter);
 
 export default app;
-
-// urlDeployed/auth/sign
-//
-//
