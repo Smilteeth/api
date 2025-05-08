@@ -1,39 +1,20 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "smiltheet-api",
-  "main": "src/index.ts",
-  "compatibility_date": "2025-04-29",
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "dev-smiltheet",
-      "database_id": "12f74eaa-c75e-4470-87f3-ef298da6f0d6",
-    },
-  ],
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "smiltheet-api",
+    "main": "src/index.ts",
 
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
-  // "kv_namespaces": [
-  //   {
-  //     "binding": "MY_KV_NAMESPACE",
-  //     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-  //   }
-  // ],
-  // "r2_buckets": [
-  //   {
-  //     "binding": "MY_BUCKET",
-  //     "bucket_name": "my-bucket"
-  //   }
-  // ],
-  // "ai": {
-  //   "binding": "AI"
-  // },
-  // "observability": {
-  //   "enabled": true,
-  //   "head_sampling_rate": 1
-  // }
+    "compatibility_flags": [
+        "nodejs_compat"
+    ],
+
+    "compatibility_date": "2024-09-23",
+
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "smiltheet-dev",
+            "database_id": "a13af4f0-3fe3-43fa-9826-b1ab25bd30c6"
+        }
+    ],
+
 }

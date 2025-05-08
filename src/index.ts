@@ -1,4 +1,7 @@
-import { Hono } from "hono";
+import apiRouter from './routes';
+import authRouter from './modules/auth/auth.route';
+import { Context, Hono } from 'hono';
+import { authMiddleware } from './middleware/auth';
 
 import fatherRoutes from "./modules/father/father.routes"; 
 
@@ -28,19 +31,10 @@ app.get("/", (c) => {
   });
 });
 
-app.get("/greet", (c) => {
-  const name = c.req.query("name") || "Mundo";
-  return c.json({
-    message: `Hola, ${name}!`,
-    _links: [
-      {
-        self: {
-          href: `/greet${name ? `?name=${name}` : ""}`,
-          method: "GET",
-        },
-      },
-    ],
-  });
-});
+app.use('/api/*', authMiddleware);
+
+app.route('/auth', authRouter);
+
+app.route('/api', apiRouter);
 
 export default app;
