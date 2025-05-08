@@ -1,6 +1,14 @@
 import { Hono } from "hono";
 
+import fatherRoutes from "./modules/father/father.routes"; 
+
+
 const app = new Hono();
+
+/**
+ * Rutas del módulo de padres.
+ */
+app.route("/fathers", fatherRoutes);
 
 app.get("/", (c) => {
   return c.json({

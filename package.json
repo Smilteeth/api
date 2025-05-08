@@ -9,8 +9,8 @@
 		},
 		{
 			"name": "Ethan Sarricolea",
-			"email": "",
-			"github": ""
+			"email": "esarricolea@gmail.com",
+			"github": "https://github.com/Ethan-Sarricolea"
 		}
 	],
 	"scripts": {
@@ -27,7 +27,8 @@
 		"dotenv": "^16.5.0",
 		"drizzle-orm": "^0.43.1",
 		"hono": "^4.7.8",
-		"prettier": "^3.5.3"
+		"prettier": "^3.5.3",
+		"smiltheet-api": "file:"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20250430.0",
