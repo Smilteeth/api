@@ -5,6 +5,6 @@ const dentistRouter = new Hono();
 
 const dentistController = new DentistController();
 
-dentistRouter.post('/', (c) => dentistController.create(c));
+dentistRouter.put('/', (c) => dentistController.create(c));
 
 export default dentistRouter;

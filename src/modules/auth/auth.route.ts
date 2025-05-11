@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 const authRouter = new Hono();
 const authController = new AuthController();
 
-authRouter.post('/sign', (c) => authController.signUp(c));
-authRouter.post('/login', (c) => authController.logIn(c));
+authRouter.put('/sign', (c) => authController.signUp(c));
+authRouter.put('/login', (c) => authController.logIn(c));
 
 export default authRouter;
