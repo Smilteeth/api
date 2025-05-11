@@ -49,12 +49,13 @@ export class AuthController {
 
 			const authService = new ServiceFactory(c).createService('auth');
 
-			const { token, exp } = await (authService as AuthService).findIdByEmail(data);
+			const { token, exp, type } = await (authService as AuthService).findIdByEmail(data);
 
 			return c.json(
 				{
 					token: token,
-					expiration: exp
+					expiration: exp,
+					userType: type
 				},
 				202
 			);
