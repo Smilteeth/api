@@ -26,7 +26,7 @@ export class AuthService {
 		}
 	}
 
-	async findIdByEmail(data: LogInData): Promise<{ token: string; exp: number }> {
+	async findIdByEmail(data: LogInData): Promise<{ token: string; exp: number; type: string }> {
 		try {
 			const user = await this.authDao.findIdByEmail(data.email);
 
@@ -44,7 +44,7 @@ export class AuthService {
 
 			const { token, exp } = await this.jwtUtil.generateJwt(userId, type);
 
-			return { token, exp };
+			return { token, exp, type: user.type };
 		} catch (error) {
 			throw error;
 		}
