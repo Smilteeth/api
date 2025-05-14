@@ -2,39 +2,47 @@
 
 // Todo lo que se puede hacer (metodos y lo logico)
 
-import { ChildDao } from '../child/child.dao';
-import { Child, CreateChildInput } from '../child/child.types';
 import type { D1Database } from '@cloudflare/workers-types';
+import { Child, CreateChildInput } from '../child/child.types';
+import { DaoFactory } from '../../core/factory';
 
-
-// const childDao = new ChildDao();
-
+/**
+ * Servicio para la lógica de negocio relacionada con los padres.
+ * Utiliza el DAO de niños para acceder a los datos.
+ */
 export class FatherService {
-  // Instancia del DAO de hijos
-  private childDao: ChildDao;
-
-  constructor(env: { DB: D1Database }) {
-    this.childDao = new ChildDao(env);
-  }
+  /**
+   * Constructor que inicializa el servicio con el entorno.
+   * @param env Objeto que contiene la instancia de D1Database
+   */
+  constructor(private env: { DB: D1Database }) {}
+  
   /**
    * Obtiene todos los hijos de un padre específico.
    * 
-   * @param fatherId 
-   * @returns 
+   * @param fatherId ID del padre cuyos hijos se desean obtener
+   * @returns Promise con un array de objetos Child
    */
   async getSons(fatherId: number): Promise<Child[]> {
-    const allChildren = await this.childDao.getAll();
-    return allChildren.filter(child => child.father_id === fatherId);
+    // Obtiene el DAO a través del factory
+    const childDao = DaoFactory.getChildDao(this.env);
+    
+    const allChildren = await childDao.getAll();
+    return allChildren.filter((child: { father_id: number; }) => child.father_id === fatherId);
   }
 
   /**
-   * Crear un hijo para un padre específico.
+   * Crea un hijo para un padre específico.
    * 
-   * @param fatherId 
-   * @param data 
-   * @returns {Promise<Child>}
+   * @param fatherId ID del padre al que se le asignará el hijo
+   * @param data Datos del hijo a crear
+   * @returns Promise con el objeto Child creado
+   * @throws Error si algún campo requerido está ausente
    */
   async addSon(fatherId: number, data: Omit<CreateChildInput, 'father_id'>): Promise<Child> {
+    // Obtiene el DAO a través del factory
+    const childDao = DaoFactory.getChildDao(this.env);
+    
     const {
       name,
       last_name,
@@ -45,71 +53,16 @@ export class FatherService {
       night_brushing_time
     } = data;
 
+    // Validación de campos requeridos
     if (!name || !last_name || !gender || !birth_date || !morning_brushing_time ||
         !afternoon_brushing_time || !night_brushing_time) {
       throw new Error('Todos los campos del hijo son obligatorios.');
     }
 
-    return await this.childDao.add({
+    // Crea el hijo a través del DAO
+    return await childDao.add({
       ...data,
       father_id: fatherId
     });
   }
 }
-
-// Creacion de la clase FatherService
-// export class FatherService {
-//   // Instancia del DAO de hijos
-//   private childDao: ChildDao;
-
-//   constructor() {
-//     this.childDao = new ChildDao();
-
-  
-//     /**
-//      * Obtiene todos los hijos de un padre específico.
-//      * 
-//      * @param fatherId 
-//      * @returns 
-//      */
-//     export async function getSons(fatherId: number): Promise<Child[]> {
-//       const allChildren = await childDao.getAll();
-//       return allChildren.filter(child => child.father_id === fatherId);
-//     }
-
-//     /**
-//      * Crear un hijo para un padre específico.
-//      * 
-//      * @param fatherId 
-//      * @param data 
-//      * @returns {Promise<Child>}
-//      */
-//     export async function addSon(fatherId: number, data: Omit<CreateChildInput, 'father_id'>): Promise<Child> {
-      
-//         // Validación simple
-//         const { name, last_name, gender, birth_date, morning_brushing_time,
-//             afternoon_brushing_time, night_brushing_time } = data;
-
-//         if (!name || !last_name || !gender || !birth_date || !morning_brushing_time 
-//             || !afternoon_brushing_time || !night_brushing_time)
-//         {
-//             throw new Error('Todos los campos del hijo son obligatorios.');
-//         }
-
-//         // retorna el hijo creado
-        
-//         return await childDao.add({
-//           ...data,
-//           father_id: fatherId,
-//           name: '',
-//           last_name: '',
-//           gender: 'M',
-//           birth_date: '',
-//           morning_brushing_time: '',
-//           afternoon_brushing_time: '',
-//           night_brushing_time: ''
-//       });
-//     }
-
-//   }
-// }

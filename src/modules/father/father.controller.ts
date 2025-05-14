@@ -1,24 +1,18 @@
 import { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { FatherService } from './father.service';
+import type { D1Database } from '@cloudflare/workers-types';
+import { ServiceFactory } from '../../core/factory';
 
 /**
  * Controlador para manejar operaciones relacionadas con el padre.
  * Se comunica con FatherService para acceder a los datos de los hijos.
  */
 export class FatherController {
-  /** Servicio que maneja la lógica de negocio relacionada con el padre. */
-  private fatherService: FatherService;
-
   /**
-   * Constructor que instancia el servicio necesario.
-   * 
-   * HACK: Utilice el DB:D1DataBase como sulución rapida para importaciones
-   *    Esto en services, child.dao y controller
+   * Constructor que almacena el entorno para pasarlo a los servicios.
+   * @param env Objeto que contiene la instancia de D1Database
    */
-  constructor(env: { DB: D1Database }) {
-    this.fatherService = new FatherService(env);
-  }
+  constructor(private env: { DB: D1Database }) {}
 
   /**
    * Maneja la solicitud para obtener los hijos de un padre específico.
@@ -31,14 +25,16 @@ export class FatherController {
     try {
       const id = c.req.param('id');
 
-
       // Verificar si se proporcionó el ID
       if (!id) {
         throw new HTTPException(400, { message: 'ID is required' });
       }
 
+      // Obtener el servicio a través del factory
+      const fatherService = ServiceFactory.getFatherService(this.env);
+      
       // Llamar al servicio para obtener los hijos del padre
-      const sons = await this.fatherService.getSons(Number(id));
+      const sons = await fatherService.getSons(Number(id));
 
       // Verifica si se obtuvo la respuesta del servicio
       if (!sons || sons.length === 0) {
@@ -53,7 +49,6 @@ export class FatherController {
     }
   }
 
-  // POST
   /**
    * Maneja la solicitud para agregar un hijo a un padre específico.
    *
@@ -65,15 +60,17 @@ export class FatherController {
     try {
       const body = await c.req.json();
 
-
       // Verificar si se proporcionó el ID del padre
       if (!body.father_id) {
         throw new HTTPException(400, { message: 'Father ID is required' });
       }
 
+      // Obtener el servicio a través del factory
+      const fatherService = ServiceFactory.getFatherService(this.env);
+      
       // Llamar al servicio para agregar un hijo
       const { father_id, ...childData } = body;
-      const son = await this.fatherService.addSon(father_id, childData);
+      const son = await fatherService.addSon(father_id, childData);
 
       // Retornar la respuesta al cliente
       return c.json({ message: son });
@@ -82,6 +79,4 @@ export class FatherController {
       throw new HTTPException(500, { message: 'Server error', cause: error });
     }
   }
-
-  // Funcion para eliminar un hijo ???
 }
