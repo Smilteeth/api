@@ -4,7 +4,7 @@
 
 import type { D1Database } from '@cloudflare/workers-types';
 import { Child, CreateChildInput } from '../child/child.types';
-import { DaoFactory } from '../../core/factory';
+import { ChildDao } from '../child/child.dao';
 
 /**
  * Servicio para la lógica de negocio relacionada con los padres.
@@ -15,7 +15,11 @@ export class FatherService {
    * Constructor que inicializa el servicio con el entorno.
    * @param env Objeto que contiene la instancia de D1Database
    */
-  constructor(private env: { DB: D1Database }) {}
+  private childDao: ChildDao;
+
+  constructor(private env: { DB: D1Database }) {
+    this.childDao = new ChildDao(env);
+  }
   
   /**
    * Obtiene todos los hijos de un padre específico.
@@ -24,10 +28,10 @@ export class FatherService {
    * @returns Promise con un array de objetos Child
    */
   async getSons(fatherId: number): Promise<Child[]> {
-    // Obtiene el DAO a través del factory
-    const childDao = DaoFactory.getChildDao(this.env);
+    // // Obtiene el DAO a través del factory
+    // const childDao = DaoFactory.getChildDao(this.env);
     
-    const allChildren = await childDao.getAll();
+    const allChildren = await this.childDao.getAll();
     return allChildren.filter((child: { father_id: number; }) => child.father_id === fatherId);
   }
 
@@ -40,29 +44,14 @@ export class FatherService {
    * @throws Error si algún campo requerido está ausente
    */
   async addSon(fatherId: number, data: Omit<CreateChildInput, 'father_id'>): Promise<Child> {
-    // Obtiene el DAO a través del factory
-    const childDao = DaoFactory.getChildDao(this.env);
-    
-    const {
-      name,
-      last_name,
-      gender,
-      birth_date,
-      morning_brushing_time,
-      afternoon_brushing_time,
-      night_brushing_time
-    } = data;
-
-    // Validación de campos requeridos
-    if (!name || !last_name || !gender || !birth_date || !morning_brushing_time ||
-        !afternoon_brushing_time || !night_brushing_time) {
-      throw new Error('Todos los campos del hijo son obligatorios.');
+    // Validación simplificada (ejemplo)
+    if (!data.name || !data.lastName) { 
+      throw new Error('Campos requeridos faltantes');
     }
 
-    // Crea el hijo a través del DAO
-    return await childDao.add({
+    return await this.childDao.add({
       ...data,
-      father_id: fatherId
+      fatherId,
     });
   }
 }

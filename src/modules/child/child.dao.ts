@@ -1,7 +1,11 @@
 import { childTable } from '../../config/db/schema';
 import { eq } from 'drizzle-orm';
 import type { D1Database } from '@cloudflare/workers-types';
-import { DatabaseFactory } from '../../core/database.factory';
+// import { DatabaseFactory } from '../../core/database.factory';
+import { drizzle } from 'drizzle-orm/d1';
+import { CreateChildInput } from './child.types';
+import { Child } from './child.types';
+
 
 /**
  * Clase de acceso a datos (DAO) para la entidad Child.
@@ -19,7 +23,7 @@ export class ChildDao {
    * @returns Instancia de Drizzle ORM
    */
   private get db() {
-    return DatabaseFactory.getDatabase(this.env.DB);
+    return drizzle(this.env.DB);
   }
 
   /**
@@ -38,28 +42,28 @@ export class ChildDao {
    * @param child Objeto con los datos del niño a agregar
    * @returns Promise con el niño agregado
    */
-  async add(child: {
-    father_id: number;
-    name: string;
-    last_name: string;
-    gender: 'M' | 'F';
-    birth_date: string;
-    morning_brushing_time: string;
-    afternoon_brushing_time: string;
-    night_brushing_time: string;
-  }): Promise<any> {
+  // child.dao.ts (add() corregido)
+  async add(child: CreateChildInput): Promise<Child> {
     const now = new Date().toISOString();
 
     const result = await this.db
       .insert(childTable)
-      .values({   // FIXME: ME da error pero no entiendo del todo por qué
-        ...child,
+      .values({
+        // Mapear snake_case → camelCase (según el schema)
+        fatherId: child.fatherId, // ✅
+        name: child.name,
+        lastName: child.lastName, // ✅
+        gender: child.gender,
+        birthDate: child.birthDate, // ✅
+        morningBrushingTime: child.morningBrushingTime, // ✅
+        afternoonBrushingTime: child.afternoonBrushingTime, // ✅
+        nightBrushingTime: child.nightBrushingTime, // ✅
         creationDate: now,
-        last_modification_date: now,
-        is_active: true,
+        lastModificationDate: now, // ✅
+        isActive: true, // ✅
       })
       .returning();
 
-    return result[0];
+    return result[0] as Child;
   }
 }
