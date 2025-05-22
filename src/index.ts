@@ -1,10 +1,9 @@
 import apiRouter from './routes';
 import authRouter from './modules/auth/auth.route';
-import { Context, Hono } from 'hono';
-import { authMiddleware } from './middleware/auth';
-
-import fatherRoutes from "./modules/father/father.routes"; 
-
+import fatherRoutes from "./modules/father/father.routes"; // FIXME: Aqui me da error de ruta
+import { Hono } from 'hono';
+import { html } from 'hono/html';
+import { appCors } from './middleware/cors';
 
 const app = new Hono();
 
@@ -13,25 +12,17 @@ const app = new Hono();
  */
 app.route("/fathers", fatherRoutes);
 
-app.get("/", (c) => {
-  return c.json({
-    message: "Bienvenido a a la API de smiltheet",
-    _links: [
-      {
-        self: {
-          href: "/",
-          method: "GET",
-        },
-      },
-      {
-        href: "/greet",
-        method: "GET",
-      },
-    ],
-  });
-});
+app.use('*', appCors());
 
-app.use('/api/*', authMiddleware);
+app.get('/', (c) => {
+	return c.html(
+		html`<!doctype html>
+			<h1>Smiltheet API</h1>
+			<a href="https://apidog.com/apidoc/shared/cafa49bb-327d-4dc3-8e65-aa1eea473073"
+				>¡Check our docs for more info!</a
+			> `
+	);
+});
 
 app.route('/auth', authRouter);
 

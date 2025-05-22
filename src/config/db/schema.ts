@@ -83,6 +83,7 @@ export const childBackgroundTable = sqliteTable('ChildBackground', {
 export const appointmentTable = sqliteTable('Appointment', {
 	appointmentId: int('appointment_id').primaryKey({ autoIncrement: true }),
 	dentistId: int('dentist_id').references(() => dentistTable.userId),
+	fatherId: int('father_id').references(() => userTable.userId),
 	childId: int('child_id').references(() => childTable.childId),
 	reason: text('reason', { length: 255 }).notNull(),
 	appointmentDatetime: text('appointment_datetime', { length: 26 }).notNull(),

@@ -1,0 +1,1 @@
+ALTER TABLE `Appointment` ADD `father_id` integer REFERENCES User(user_id);
