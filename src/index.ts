@@ -2,11 +2,8 @@ import apiRouter from './routes';
 import authRouter from './modules/auth/auth.route';
 import { Hono } from 'hono';
 import { html } from 'hono/html';
-import { appCors } from './middleware/cors';
 
 const app = new Hono();
-
-app.use('*', appCors());
 
 app.get('/', (c) => {
 	return c.html(
