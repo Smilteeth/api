@@ -41,13 +41,9 @@ export class AppointmentController {
 
 	async fetchByUserId(c: Context) {
 		try {
-			const { page, limit } = await c.req.query();
+			const { page = '1' } = await c.req.query();
 
 			let parsedPage = parseInt(page);
-			let parsedLimit = parseInt(limit);
-
-			parsedPage ??= 1;
-			parsedLimit ??= 10;
 
 			const appointmentService = new ServiceFactory(c).createService('appointment');
 
@@ -58,11 +54,7 @@ export class AppointmentController {
 			}
 
 			return c.json(
-				pagination<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>>(
-					appointments,
-					parsedPage,
-					parsedLimit
-				)
+				pagination<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>>(appointments, parsedPage)
 			);
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : String(error);

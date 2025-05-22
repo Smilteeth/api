@@ -1,18 +1,9 @@
 import apiRouter from './routes';
 import authRouter from './modules/auth/auth.route';
-import fatherRoutes from "./modules/father/father.routes"; // FIXME: Aqui me da error de ruta
 import { Hono } from 'hono';
 import { html } from 'hono/html';
-import { appCors } from './middleware/cors';
 
 const app = new Hono();
-
-/**
- * Rutas del módulo de padres.
- */
-app.route("/fathers", fatherRoutes);
-
-app.use('*', appCors());
 
 app.get('/', (c) => {
 	return c.html(
