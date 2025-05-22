@@ -1,17 +1,17 @@
 // child.types.ts (corregido a camelCase)
 export interface Child {
     id?: number;
-    fatherId: number; // ✅ (no father_id)
+    fatherId: number;
     name: string;
-    lastName: string; // ✅ (no last_name)
+    lastName: string;
     gender: 'M' | 'F';
-    birthDate: string; // ✅ (no birth_date)
-    morningBrushingTime: string; // ✅ (no morning_brushing_time)
+    birthDate: string;
+    morningBrushingTime: string;
     afternoonBrushingTime: string;
     nightBrushingTime: string;
-    creationDate?: string; // ✅
-    lastModificationDate?: string; // ✅ (no last_modification_date)
-    isActive?: boolean; // ✅ (no is_active)
+    creationDate?: string
+    lastModificationDate?: string;
+    isActive?: boolean;
 }
 
 export type CreateChildInput = Omit<Child, 'id' | 'creationDate' | 'lastModificationDate' | 'isActive'>;

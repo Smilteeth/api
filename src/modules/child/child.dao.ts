@@ -50,17 +50,17 @@ export class ChildDao {
       .insert(childTable)
       .values({
         // Mapear snake_case → camelCase (según el schema)
-        fatherId: child.fatherId, // ✅
+        fatherId: child.fatherId,
         name: child.name,
-        lastName: child.lastName, // ✅
+        lastName: child.lastName,
         gender: child.gender,
-        birthDate: child.birthDate, // ✅
-        morningBrushingTime: child.morningBrushingTime, // ✅
-        afternoonBrushingTime: child.afternoonBrushingTime, // ✅
-        nightBrushingTime: child.nightBrushingTime, // ✅
+        birthDate: child.birthDate,
+        morningBrushingTime: child.morningBrushingTime,
+        afternoonBrushingTime: child.afternoonBrushingTime,
+        nightBrushingTime: child.nightBrushingTime,
         creationDate: now,
-        lastModificationDate: now, // ✅
-        isActive: true, // ✅
+        lastModificationDate: now,
+        isActive: true,
       })
       .returning();
 
