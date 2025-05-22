@@ -56,25 +56,19 @@ export class FatherController {
    * @returns {Promise<Response>} Respuesta con el hijo agregado o un error.
    * @throws {HTTPException} Si el ID del padre no es válido o ocurre un error de servidor.
    */
+  // Versión CORRECTA
   async addSon(c: Context): Promise<Response> {
     try {
-      const body = await c.req.json();
-
-      // Verificar si se proporcionó el ID del padre
-      if (!body.father_id) {
-        throw new HTTPException(400, { message: 'Father ID is required' });
+      const father_id = Number(c.req.param('id'));
+      const childData = await c.req.json();
+      if (isNaN(father_id)) {
+        throw new HTTPException(400, { message: 'ID inválido' });
       }
 
-      // Obtener el servicio a través del factory
       const fatherService = ServiceFactory.getFatherService(this.env);
-      
-      // Llamar al servicio para agregar un hijo
-      const { father_id, ...childData } = body;
       const son = await fatherService.addSon(father_id, childData);
 
-      // Retornar la respuesta al cliente
-      return c.json({ message: son });
-
+      return c.json(son, 201);
     } catch (error: any) {
       throw new HTTPException(500, { message: 'Server error', cause: error });
     }

@@ -32,7 +32,7 @@ export class FatherService {
     // const childDao = DaoFactory.getChildDao(this.env);
     
     const allChildren = await this.childDao.getAll();
-    return allChildren.filter((child: { father_id: number; }) => child.father_id === fatherId);
+    return allChildren.filter((child: Child) => child.fatherId === fatherId);
   }
 
   /**
@@ -43,9 +43,9 @@ export class FatherService {
    * @returns Promise con el objeto Child creado
    * @throws Error si algún campo requerido está ausente
    */
-  async addSon(fatherId: number, data: Omit<CreateChildInput, 'father_id'>): Promise<Child> {
-    // Validación simplificada (ejemplo)
-    if (!data.name || !data.lastName) { 
+  async addSon(fatherId: number, data: Omit<CreateChildInput, 'fatherId'>) {  
+  // Validar campos en camelCase  
+  if (!data.name || !data.lastName) {
       throw new Error('Campos requeridos faltantes');
     }
 

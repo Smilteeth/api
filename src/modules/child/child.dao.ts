@@ -30,11 +30,15 @@ export class ChildDao {
    * Obtiene todos los niños activos en la base de datos.
    * @returns Promise con array de niños
    */
-  async getAll(): Promise<any[]> {
-    return await this.db
-      .select()
-      .from(childTable)
-      .where(eq(childTable.isActive, true));
+  async getAll(fatherId?: number): Promise<Child[]> {
+    let query = this.db.select().from(childTable).$dynamic();
+
+    if (fatherId) {
+      query = query.where(eq(childTable.fatherId, fatherId));
+    }
+
+    const result = await query;
+    return result as Child[];
   }
 
   /**
