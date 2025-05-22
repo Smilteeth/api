@@ -1,8 +1,7 @@
 import { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { DentistTableTypes } from './dentist.types';
-import { ServiceFactory } from '../../utils/service.factory';
-import { DentistService } from './dentist.service';
+import { ServiceFactory } from '../../core/service.factory';
 
 export class DentistController {
 	async create(c: Context) {
@@ -15,7 +14,7 @@ export class DentistController {
 
 			const dentistService = new ServiceFactory(c).createService('dentist');
 
-			await (dentistService as DentistService).create(data);
+			await dentistService.create(data);
 
 			return c.json({ message: 'Successful registration' }, 201);
 		} catch (error) {
@@ -31,8 +30,6 @@ export class DentistController {
 					cause: error
 				});
 			}
-
-			console.log(errorMessage);
 
 			throw new HTTPException(500, {
 				message: 'Server error',

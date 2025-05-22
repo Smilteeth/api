@@ -1,8 +1,7 @@
 import { Context } from 'hono';
 import { LogInData, UserTableTypes } from './auth.types';
 import { HTTPException } from 'hono/http-exception';
-import { ServiceFactory } from '../../utils/service.factory';
-import { AuthService } from './auth.service';
+import { ServiceFactory } from '../../core/service.factory';
 
 export class AuthController {
 	async signUp(c: Context) {
@@ -15,7 +14,7 @@ export class AuthController {
 
 			const authService = new ServiceFactory(c).createService('auth');
 
-			await (authService as AuthService).create(data);
+			await authService.create(data);
 
 			return c.json({ message: 'User created' }, 201);
 		} catch (error) {
@@ -49,7 +48,7 @@ export class AuthController {
 
 			const authService = new ServiceFactory(c).createService('auth');
 
-			const { token, exp, type } = await (authService as AuthService).findIdByEmail(data);
+			const { token, exp, type } = await authService.findIdByEmail(data);
 
 			return c.json(
 				{
