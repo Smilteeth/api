@@ -23,7 +23,7 @@ export class ServiceFactory {
 		const jwtPayload = context.get('jwtPayload');
 
 		this.serviceCreator = {
-			auth: () => new AuthService(dao.createDao('auth'), jwtPayload),
+			auth: () => new AuthService(dao.createDao('auth'), context.env.JWT_SECRET),
 			dentist: () => new DentistService(dao.createDao('dentist'), jwtPayload),
 			appointment: () => new AppointmentService(dao.createDao('appointment'), jwtPayload)
 		};
