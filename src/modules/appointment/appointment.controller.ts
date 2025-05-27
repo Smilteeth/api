@@ -3,6 +3,7 @@ import { AppointmentTableTypes } from './appointment.types';
 import { HTTPException } from 'hono/http-exception';
 import { ServiceFactory } from '../../core/service.factory';
 import { pagination } from '../../utils/pagination';
+import { HtmlEscapedCallbackPhase } from 'hono/utils/html';
 
 export class AppointmentController {
 	async create(c: Context) {
@@ -39,22 +40,26 @@ export class AppointmentController {
 		}
 	}
 
-	async fetchByUserId(c: Context) {
+	async fetchUserAppointments(c: Context) {
 		try {
-			const { page = '1' } = await c.req.query();
+			const { page, limit } = await c.req.query();
 
-			let parsedPage = parseInt(page);
+			const paginationValues = this.getPaginationValues(page, limit);
 
 			const appointmentService = new ServiceFactory(c).createService('appointment');
 
-			const appointments = await appointmentService.fetchByUserId();
+			const appointments = await appointmentService.fetchUserAppointments();
 
 			if (!appointments) {
 				throw new HTTPException(404, { message: "User doesn't have appointments" });
 			}
 
 			return c.json(
-				pagination<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>>(appointments, parsedPage)
+				pagination<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>>(
+					appointments,
+					paginationValues.parsedPage,
+					paginationValues.parsedLimit
+				)
 			);
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : String(error);
@@ -63,13 +68,44 @@ export class AppointmentController {
 				throw error;
 			}
 
-			console.log(errorMessage);
-
 			throw new HTTPException(500, {
 				message: 'Server error',
 				cause: errorMessage
 			});
 		}
+	}
+
+	/*
+    async fetchDateById(c: Context) {
+        try {
+            const { page, limit, id } = await c.req.query();
+
+            const paginationValues = this.getPaginationValues(page, limit);
+
+            const parsedId = parseInt(id);
+
+            if (isNaN(parsedId)) {
+                throw new HTTPException(401, { message: "Invali id" });
+            }
+
+
+            const appointmentService = new ServiceFactory(c).createService('appointment');
+
+            const appointmentData = appointmentService.
+
+                
+
+        } catch { }
+    } */
+
+	private getPaginationValues(page: string, limit: string) {
+		let parsedPage = parseInt(page);
+		let parsedLimit = parseInt(limit);
+
+		return {
+			parsedPage: isNaN(parsedPage) ? 1 : parsedPage,
+			parsedLimit: isNaN(parsedLimit) ? 10 : parsedLimit
+		};
 	}
 
 	private isValidData(data: Partial<AppointmentTableTypes>): boolean {
