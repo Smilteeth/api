@@ -40,20 +40,20 @@ export const dentistTable = sqliteTable('Dentist', {
 	longitude: real('longitude').notNull()
 });
 
-export const childTable = sqliteTable('Child', {
-	childId: int('child_id').primaryKey({ autoIncrement: true }),
-	fatherId: int('father_id').references(() => userTable.userId),
-	name: text('name', { length: 255 }).notNull(),
-	lastName: text('last_name', { length: 255 }).notNull(),
-	gender: text('gender', { length: 1, enum: ['M', 'F'] }).notNull(),
-	birthDate: text('birth_date', { length: 26 }).notNull(),
-	morningBrushingTime: text('morning_brushing_time', { length: 8 }).notNull(),
-	afternoonBrushingTime: text('afternoon_brushing_time', { length: 8 }).notNull(),
-	nightBrushingTime: text('night_brushing_time', { length: 8 }).notNull(),
-	creationDate: text('creation_date').default(sql`(CURRENT_DATE)`),
-	lastModificationDate: text('last_modification_date', { length: 26 }),
-	isActive: int('is_active', { mode: 'boolean' }).default(true)
-});
+	export const childTable = sqliteTable('Child', {
+		childId: int('child_id').primaryKey({ autoIncrement: true }),
+		fatherId: int('father_id').references(() => userTable.userId).notNull(), // NOTE: Para evitar el error en dao
+		name: text('name', { length: 255 }).notNull(),
+		lastName: text('last_name', { length: 255 }).notNull(),
+		gender: text('gender', { length: 1, enum: ['M', 'F'] }).notNull(),
+		birthDate: text('birth_date', { length: 26 }).notNull(),
+		morningBrushingTime: text('morning_brushing_time', { length: 8 }).notNull(),
+		afternoonBrushingTime: text('afternoon_brushing_time', { length: 8 }).notNull(),
+		nightBrushingTime: text('night_brushing_time', { length: 8 }).notNull(),
+		creationDate: text('creation_date').default(sql`(CURRENT_DATE)`),
+		lastModificationDate: text('last_modification_date', { length: 26 }),
+		isActive: int('is_active', { mode: 'boolean' }).default(true)
+	});
 
 export const helpDeviceTable = sqliteTable('HelpDevice', {
 	helpDeviceId: int('help_device_id').primaryKey({ autoIncrement: true }),

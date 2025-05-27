@@ -3,13 +3,15 @@ import { AuthService } from '../modules/auth/auth.service';
 import { DentistService } from '../modules/dentist/dentist.service';
 import { DaoFactory } from './dao.factory';
 import { AppointmentService } from '../modules/appointment/appointment.service';
+import { ChildService } from '../modules/child/child.service';
 
-type ServiceType = 'auth' | 'dentist' | 'appointment';
+type ServiceType = 'auth' | 'dentist' | 'appointment' | 'child';
 
 interface ServiceMap {
 	auth: AuthService;
 	dentist: DentistService;
 	appointment: AppointmentService;
+	child: ChildService;
 }
 
 export class ServiceFactory {
@@ -25,7 +27,8 @@ export class ServiceFactory {
 		this.serviceCreator = {
 			auth: () => new AuthService(dao.createDao('auth'), context.env.JWT_SECRET),
 			dentist: () => new DentistService(dao.createDao('dentist'), jwtPayload),
-			appointment: () => new AppointmentService(dao.createDao('appointment'), jwtPayload)
+			appointment: () => new AppointmentService(dao.createDao('appointment'), jwtPayload),
+			child: () => new ChildService(dao.createDao('child'), jwtPayload)
 		};
 	}
 

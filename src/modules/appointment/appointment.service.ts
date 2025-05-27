@@ -17,7 +17,7 @@ export class AppointmentService {
 		await this.appointmentDao.create({ ...data, fatherId: this.jwtPayload.userId });
 	}
 
-	async fetchByUserId(
+	async fetchUserAppointments(
 		userId?: number
 	): Promise<Array<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>>> {
 		userId ??= this.jwtPayload.userId;
@@ -31,7 +31,9 @@ export class AppointmentService {
 		return appointments;
 	}
 
-	async fetchById(appointmentId: number): Promise<Omit<AppointmentTableTypes, 'lastModificationDate' | 'creationDate'>> {
+	async fetchById(
+		appointmentId: number
+	): Promise<Omit<AppointmentTableTypes, 'lastModificationDate' | 'creationDate'>> {
 		if (!appointmentId) {
 			throw new HTTPException(404, { message: 'Appointnment no found' });
 		}
@@ -75,7 +77,7 @@ export class AppointmentService {
 	}
 
 	private async checkDentistAppointments(dentistId: number, appointmentDatetime: string) {
-		const dentistAppointments = await this.fetchByUserId(dentistId);
+		const dentistAppointments = await this.fetchUserAppointments(dentistId);
 
 		if (dentistAppointments.some((appointment) => appointment.appointmentDatetime === appointmentDatetime)) {
 			throw new HTTPException(409, { message: 'Datetime occupied' });
