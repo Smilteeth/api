@@ -96,7 +96,7 @@ export const rescheduledAppointmentTable = sqliteTable('RescheduledAppointment',
 	appointmentId: int('appointment_id')
 		.references(() => appointmentTable.appointmentId)
 		.primaryKey(),
-	reason: text('reason', { length: 255 }).notNull(),
+	rescheduleReason: text('reason', { length: 255 }).notNull(),
 	rescheduledDate: text('rescheduled_date', { length: 26 }).notNull()
 });
 
@@ -104,7 +104,7 @@ export const cancelledAppointmentTable = sqliteTable('CancelledAppointment', {
 	appointmentId: int('appointment_id')
 		.references(() => appointmentTable.appointmentId)
 		.primaryKey(),
-	reason: text('reason', { length: 255 }).notNull(),
+	cancellationReason: text('reason', { length: 255 }).notNull(),
 	dateCancelled: text('date_cancelled')
 		.default(sql`(CURRENT_DATE)`)
 		.notNull()
