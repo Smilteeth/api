@@ -1,10 +1,10 @@
-import { AppointmentTableTypes, DeactiveAppointmentTableTypes } from './appointment.types';
-import { appointmentTable, deactiveAppointmentTable } from '../../config/db/schema';
+import { AppointmentData, AppointmentTableTypes, DeactiveAppointmentTableTypes } from './appointment.types';
+import { appointmentTable, deactiveAppointmentTable, childTable } from '../../config/db/schema';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
 import { DataAccessObject } from '../../types/daos.interface';
 
 import * as schema from '../../config/db/schema';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, getTableColumns, or } from 'drizzle-orm';
 
 export class AppointmentDao implements DataAccessObject<AppointmentTableTypes> {
 	private db: DrizzleD1Database<typeof schema>;
@@ -19,22 +19,14 @@ export class AppointmentDao implements DataAccessObject<AppointmentTableTypes> {
 		await this.db.insert(appointmentTable).values(data);
 	}
 
-	async fetchUserAppointments(
-		id: number
-	): Promise<Array<Omit<AppointmentTableTypes, 'lastModificationDate'>> | undefined> {
-		return await this.db.query.appointmentTable.findMany({
-			where: (model, { eq, or }) => or(eq(model.fatherId, id), eq(model.dentistId, id)),
-			columns: {
-				lastModificationDate: false
-			},
-			orderBy: (model, { asc }) => asc(model.appointmentDatetime)
-		});
+	async fetchUserAppointments(id: number): Promise<Array<AppointmentData> | undefined> {
+		return await this.appointmentQuery(id);
 	}
 
-	async fetchById(id: number): Promise<AppointmentTableTypes | undefined> {
-		return await this.db.query.appointmentTable.findFirst({
-			where: (model, { eq }) => eq(model.appointmentId, id)
-		});
+	async fetchById(id: number): Promise<AppointmentData | undefined> {
+		const appointment = await this.appointmentQuery(id);
+
+		return appointment[0];
 	}
 
 	// operations with inactive appointment
@@ -51,15 +43,27 @@ export class AppointmentDao implements DataAccessObject<AppointmentTableTypes> {
 		]);
 	}
 
-	async fetchDeactiveAppointmentById(id: number) {
+	async fetchUserDeactiveAppointments(id: number): Promise<Array<DeactiveAppointmentTableTypes> | undefined> {
 		return await this.db
 			.select()
 			.from(deactiveAppointmentTable)
 			.where(
 				and(
-					eq(appointmentTable.fatherId, id),
+					or(eq(appointmentTable.fatherId, id), eq(appointmentTable.dentistId, id)),
 					eq(appointmentTable.appointmentId, deactiveAppointmentTable.deactiveAppointmentId)
 				)
 			);
+	}
+
+	private async appointmentQuery(id: number): Promise<Array<AppointmentData> | undefined> {
+		return await this.db
+			.select({
+				...getTableColumns(appointmentTable),
+				childName: childTable.name,
+				childLastname: childTable.lastName
+			})
+			.from(appointmentTable)
+			.innerJoin(childTable, eq(childTable.childId, appointmentTable.childId))
+			.where(or(eq(appointmentTable.fatherId, id), eq(appointmentTable.dentistId, id)));
 	}
 }
