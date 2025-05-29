@@ -32,6 +32,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           preCommands: |
             pnpm install wrangler
-
-      - name: Set JWT_SECRET to wrangler
-        run: echo "${{ secrets.JWT_SECRET }}" | pnpm exec wrangler secret put JWT_SECRET
+            echo "${{ secrets.JWT_SECRET }}" | pnpm exec wrangler secret put JWT_SECRET
