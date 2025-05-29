@@ -46,13 +46,13 @@ export class ChildController {
 		const id = await c.req.param('id');
 
 		if (!id) {
-			throw new HTTPException(401, { message: 'Missing appointment id' });
+			throw new HTTPException(401, { message: 'Missing child id' });
 		}
 
 		const parsedId = parseInt(id);
 
 		if (isNaN(parsedId)) {
-			throw new HTTPException(401, { message: 'Invalid appointment id' });
+			throw new HTTPException(401, { message: 'Invalid child id' });
 		}
 
 		const child = await this.childService.fetchById(parsedId);
@@ -64,6 +64,7 @@ export class ChildController {
 		const requiredFields: Array<keyof ChildTableTypes> = [
 			'name',
 			'lastName',
+			'dentistId',
 			'gender',
 			'birthDate',
 			'morningBrushingTime',

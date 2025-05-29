@@ -15,6 +15,8 @@ dentistRouter.use('*', async (c, next) => {
 	await next();
 });
 
-dentistRouter.put('/', (c) => c.get('dentistController').create(c));
+dentistRouter.put('/', (c) => c.var.dentistController.create(c));
+dentistRouter.get('/', (c) => c.var.dentistController.fetchDentists(c));
+dentistRouter.get('/:id', (c) => c.var.dentistController.fetchDentistById(c));
 
 export default dentistRouter;

@@ -14,7 +14,7 @@ authRouter.use('*', async (c, next) => {
 	await next();
 });
 
-authRouter.put('/sign', (c) => c.get('authController').signUp(c));
-authRouter.put('/login', (c) => c.get('authController').logIn(c));
+authRouter.put('/sign', (c) => c.var.authController.signUp(c));
+authRouter.put('/login', (c) => c.var.authController.logIn(c));
 
 export default authRouter;
