@@ -1,9 +1,9 @@
-import { HTTPException } from 'hono/http-exception';
 import { JwtPayload } from '../../types/payload.type';
 import { AppointmentDao } from './appointment.dao';
-import { AppointmentTableTypes, DeactiveAppointmentTableTypes } from './appointment.types';
+import { AppointmentData, AppointmentTableTypes, DeactiveAppointmentTableTypes } from './appointment.types';
 import { DateValidator } from '../../utils/DateValidator';
 import { Pagination, PaginationType } from '../../utils/pagination';
+import { HTTPException } from 'hono/http-exception';
 
 export class AppointmentService {
 	private appointmentDao: AppointmentDao;
@@ -40,17 +40,17 @@ export class AppointmentService {
 	async fetchUserAppointments(
 		page: number,
 		limit: number
-	): Promise<PaginationType<Omit<AppointmentTableTypes, 'lastModificationDate'>>> {
+	): Promise<PaginationType<Omit<AppointmentData, 'lastModificationDate'>>> {
 		const appointments = await this.appointmentDao.fetchUserAppointments(this.jwtPayload.userId);
 
 		if (!appointments) {
 			throw new HTTPException(404, { message: "User doesn't have appointments" });
 		}
 
-		return this.pagination.generate<Omit<AppointmentTableTypes, 'lastModificationDate'>>(appointments, page, limit);
+		return this.pagination.generate<Omit<AppointmentData, 'lastModificationDate'>>(appointments, page, limit);
 	}
 
-	async fetchById(appointmentId: number): Promise<Omit<AppointmentTableTypes, 'lastModificationDate'>> {
+	async fetchById(appointmentId: number): Promise<Omit<AppointmentData, 'lastModificationDate'>> {
 		if (!appointmentId) {
 			throw new HTTPException(404, { message: 'Appointment no found' });
 		}

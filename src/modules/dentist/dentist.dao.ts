@@ -28,7 +28,7 @@ export class DentistDao implements DataAccessObject<DentistTableTypes> {
 		  >
 		| undefined
 	> {
-		const dentists = await this.db
+		return await this.db
 			.select({
 				userId: dentistTable.userId,
 				name: userTable.name,
@@ -43,8 +43,6 @@ export class DentistDao implements DataAccessObject<DentistTableTypes> {
 			})
 			.from(dentistTable)
 			.innerJoin(userTable, eq(dentistTable.userId, userTable.userId));
-
-		return dentists;
 	}
 
 	async fetchById(
