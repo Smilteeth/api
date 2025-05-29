@@ -1,17 +1,15 @@
 {
-    "$schema": "node_modules/wrangler/config-schema.json",
-    "name": "smiltheet-api",
-    "main": "src/index.ts",
-    "compatibility_flags": [
-        "nodejs_compat"
-    ],
-    "compatibility_date": "2024-09-23",
-    "minify": true,
-    "d1_databases": [
-        {
-            "binding": "DB",
-            "database_name": "smiltheet-dev",
-            "database_id": "a13af4f0-3fe3-43fa-9826-b1ab25bd30c6"
-        }
-    ],
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "smiltheet-api",
+	"main": "src/index.ts",
+	"compatibility_flags": ["nodejs_compat"],
+	"compatibility_date": "2024-09-23",
+	"minify": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "smiltheet-dev",
+			"database_id": "4384efba-071f-4aed-bef5-718c3e07090d"
+		}
+	]
 }

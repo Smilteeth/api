@@ -1,11 +1,21 @@
 import { Hono } from 'hono';
 import { AppointmentController } from './appointment.controller';
 
-const appointmentRouter = new Hono();
+type Variables = {
+	appointmentController: AppointmentController;
+  };
+  
+  const appointmentRouter = new Hono<{ Variables: Variables }>();
 
-const appointmentController = new AppointmentController();
+appointmentRouter.use('*', async (c, next) => {
+	if (!c.var.appointmentController) {
+	  c.set('appointmentController', new AppointmentController(c));
+	}
+	await next();
+});
 
-appointmentRouter.put('/', (c) => appointmentController.create(c));
-appointmentRouter.get('/', (c) => appointmentController.fetchUserAppointments(c));
+appointmentRouter.put('/', (c) => c.var.appointmentController.create(c));
+
+appointmentRouter.get('/', (c) => c.var.appointmentController.fetchUserAppointments(c));
 
 export default appointmentRouter;

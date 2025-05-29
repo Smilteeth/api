@@ -1,7 +1,6 @@
 import {
 	appointmentTable,
 	brushTable,
-	cancelledAppointmentTable,
 	childBackgroundTable,
 	childLessonTable,
 	childTable,
@@ -9,6 +8,7 @@ import {
 	clinicHistoryTable,
 	consentFormTable,
 	courseTable,
+	deactiveAppointmentTable,
 	dentistTable,
 	helpDeviceTable,
 	itemsOwnedTable,
@@ -19,7 +19,6 @@ import {
 	odontogramTable,
 	physicalExaminationTable,
 	radiologyTestTable,
-	rescheduledAppointmentTable,
 	theetTable,
 	transactionTable,
 	treatmentPlanTable,
@@ -33,8 +32,7 @@ export type dbTypes = {
 	HelpDeviceTable: typeof helpDeviceTable.$inferSelect;
 	ChildBackgrounTable: typeof childBackgroundTable.$inferSelect;
 	AppointmentTable: typeof appointmentTable.$inferSelect;
-	RescheduledAppointmentTable: typeof rescheduledAppointmentTable.$inferSelect;
-	CancelledAppointmnetTable: typeof cancelledAppointmentTable.$inferSelect;
+	DeactiveAppointmentTable: typeof deactiveAppointmentTable.$inferSelect;
 	ClinicHistoryTable: typeof clinicHistoryTable.$inferSelect;
 	clinicHistoryFileTable: typeof clinicHistoryFileTable.$inferSelect;
 	MedicalHistoryTable: typeof medicalHistoryTable.$inferSelect;

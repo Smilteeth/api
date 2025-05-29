@@ -1,40 +1,32 @@
 import { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import { ChildTableTypes } from './child.types';
+import { ChildService } from './child.service';
 import { ServiceFactory } from '../../core/service.factory';
 
 export class ChildController {
+	private childService: ChildService;
+
+	constructor(c: Context) {
+		this.childService = new ServiceFactory(c).createService('child');
+	}
+
 	async create(c: Context) {
-		try {
-			const data = await c.req.json();
+		const data = await c.req.json();
 
-			if (!this.isValidData(data)) {
-				throw new HTTPException(400, { message: 'Missing attribute' });
-			}
-
-			const gender = data.gender.toUpperCase();
-
-			if (gender !== 'M' && gender !== 'F') {
-				throw new HTTPException(400, { message: '' });
-			}
-
-			const childService = new ServiceFactory(c).createService('child');
-
-			await childService.create(data);
-
-			return c.json({ message: 'Child added' }, 201);
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error);
-
-			if (error instanceof HTTPException) {
-				throw error;
-			}
-
-			throw new HTTPException(500, {
-				message: 'Server error',
-				cause: errorMessage
-			});
+		if (!this.isValidData(data)) {
+			throw new HTTPException(400, { message: 'Missing attribute' });
 		}
+
+		const gender = data.gender.toUpperCase();
+
+		if (gender !== 'M' && gender !== 'F') {
+			throw new HTTPException(400, { message: '' });
+		}
+
+		await this.childService.create(data);
+
+		return c.json({ message: 'Child added' }, 201);
 	}
 
 	private isValidData(data: Partial<ChildTableTypes>) {

@@ -1,106 +1,83 @@
 import { Context } from 'hono';
-import { AppointmentTableTypes } from './appointment.types';
+import { AppointmentTableTypes, DeactiveAppointmentTableTypes } from './appointment.types';
 import { HTTPException } from 'hono/http-exception';
+import { AppointmentService } from './appointment.service';
+import { ChildService } from '../child/child.service';
 import { ServiceFactory } from '../../core/service.factory';
-import { pagination } from '../../utils/pagination';
-import { HtmlEscapedCallbackPhase } from 'hono/utils/html';
 
 export class AppointmentController {
+	private appointmentService: AppointmentService;
+	private childService: ChildService;
+
+	constructor(c: Context) {
+		this.appointmentService = new ServiceFactory(c).createService('appointment');
+		this.childService = new ServiceFactory(c).createService('child');
+	}
+
 	async create(c: Context) {
-		try {
-			const data: Omit<AppointmentTableTypes, 'appointmentId'> = await c.req.json();
+		const data: Omit<AppointmentTableTypes, 'appointmentId'> = await c.req.json();
 
-			if (!this.isValidData(data)) {
-				throw new HTTPException(400, { message: 'Missing attribute' });
-			}
-
-			const appointmentService = new ServiceFactory(c).createService('appointment');
-
-			await appointmentService.create(data);
-
-			return c.json({ message: 'Appointment Scheduled' }, 201);
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error);
-
-			if (error instanceof HTTPException) {
-				throw error;
-			}
-
-			if (errorMessage.includes('UNIQUE constraint')) {
-				throw new HTTPException(400, {
-					message: 'Dentist already registered',
-					cause: error
-				});
-			}
-
-			throw new HTTPException(500, {
-				message: 'Server error',
-				cause: errorMessage
-			});
+		if (!this.isValidData(data, 'create')) {
+			throw new HTTPException(400, { message: 'Missing attribute' });
 		}
+
+		const child = await this.childService.fetchById(data.childId!);
+		await this.appointmentService.create(data);
+
+		return c.json({ message: `Appointment Scheduled for child named ${child.name}` }, 201);
 	}
 
 	async fetchUserAppointments(c: Context) {
-		try {
-			const { page, limit } = await c.req.query();
+		const { page, limit } = await c.req.query();
 
-			const paginationValues = this.getPaginationValues(page, limit);
+		const { parsedPage, parsedLimit } = this.getPaginationValues(page, limit);
 
-			const appointmentService = new ServiceFactory(c).createService('appointment');
+		const appointments = await this.appointmentService.fetchUserAppointments(parsedPage, parsedLimit);
 
-			const appointments = await appointmentService.fetchUserAppointments();
-
-			if (!appointments) {
-				throw new HTTPException(404, { message: "User doesn't have appointments" });
-			}
-
-			return c.json(
-				pagination<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>>(
-					appointments,
-					paginationValues.parsedPage,
-					paginationValues.parsedLimit
-				)
-			);
-		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error);
-
-			if (error instanceof HTTPException) {
-				throw error;
-			}
-
-			throw new HTTPException(500, {
-				message: 'Server error',
-				cause: errorMessage
-			});
+		if (!appointments) {
+			throw new HTTPException(404, { message: "User doesn't have appointments" });
 		}
+
+		return c.json(appointments);
 	}
 
-	/*
-    async fetchDateById(c: Context) {
-        try {
-            const { page, limit, id } = await c.req.query();
+	async fetchAppointmentById(c: Context) {
+		const { appointmentId } = await c.req.query();
 
-            const paginationValues = this.getPaginationValues(page, limit);
+		if (!appointmentId) {
+			throw new HTTPException(401, { message: 'Missing appointment id' });
+		}
 
-            const parsedId = parseInt(id);
+		const parsedId = parseInt(appointmentId);
 
-            if (isNaN(parsedId)) {
-                throw new HTTPException(401, { message: "Invali id" });
-            }
+		if (isNaN(parsedId)) {
+			throw new HTTPException(401, { message: 'Invalid appointment id' });
+		}
 
+		const appointment = await this.appointmentService.fetchById(parsedId);
 
-            const appointmentService = new ServiceFactory(c).createService('appointment');
+		return c.json(appointment);
+	}
 
-            const appointmentData = appointmentService.
+	async deactivateAppointment(c: Context) {
+		const { data } = await c.req.json();
 
-                
+		const deactivationType = ['FINISHED', 'CANCELLED', 'RESCHEDULED'];
 
-        } catch { }
-    } */
+		if (!this.isValidData(data, 'deactivation')) {
+			throw new HTTPException(400, { message: 'Missing attribute' });
+		}
+
+		if (!deactivationType.includes(data.type)) {
+			throw new HTTPException(400, { message: 'Invalid attribute' });
+		}
+
+		await this.appointmentService.deactiveAppointment(data);
+	}
 
 	private getPaginationValues(page: string, limit: string) {
-		let parsedPage = parseInt(page);
-		let parsedLimit = parseInt(limit);
+		const parsedPage = parseInt(page);
+		const parsedLimit = parseInt(limit);
 
 		return {
 			parsedPage: isNaN(parsedPage) ? 1 : parsedPage,
@@ -108,13 +85,16 @@ export class AppointmentController {
 		};
 	}
 
-	private isValidData(data: Partial<AppointmentTableTypes>): boolean {
-		const requiredFields: Array<keyof AppointmentTableTypes> = [
-			'dentistId',
-			'childId',
-			'reason',
-			'appointmentDatetime'
-		];
-		return requiredFields.every((field) => Boolean(data[field]));
+	private isValidData(
+		data: Partial<AppointmentTableTypes | DeactiveAppointmentTableTypes>,
+		mode: 'create' | 'deactivation'
+	): boolean {
+		const fieldSets = {
+			create: ['dentistId', 'childId', 'reason', 'appointmentDatetime'],
+			deactivation: ['deactiveAppointmentId', 'reason', 'type']
+		};
+
+		const requiredFields = fieldSets[mode] as Array<keyof AppointmentTableTypes | DeactiveAppointmentTableTypes>;
+		return requiredFields.every((field) => Boolean(data[field as keyof typeof data]));
 	}
 }

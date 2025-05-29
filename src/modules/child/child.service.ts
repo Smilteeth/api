@@ -23,6 +23,10 @@ export class ChildService {
 			throw new HTTPException(404, { message: 'Child not found' });
 		}
 
+		if (child.fatherId !== this.jwtPayload.userId) {
+			throw new HTTPException(401, { message: "Child doesn't below to user" });
+		}
+
 		return child;
 	}
 }
