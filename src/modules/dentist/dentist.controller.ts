@@ -3,12 +3,16 @@ import { HTTPException } from 'hono/http-exception';
 import { DentistTableTypes } from './dentist.types';
 import { ServiceFactory } from '../../core/service.factory';
 import { DentistService } from './dentist.service';
+import { Pagination } from '../../utils/pagination';
 
 export class DentistController {
 	private dentistService: DentistService;
 
+	private pagination: Pagination;
+
 	constructor(c: Context) {
 		this.dentistService = new ServiceFactory(c).createService('dentist');
+		this.pagination = new Pagination();
 	}
 
 	async create(c: Context) {
@@ -21,6 +25,34 @@ export class DentistController {
 		await this.dentistService.create(data);
 
 		return c.json({ message: 'Successful registration' }, 201);
+	}
+
+	async fetchDentists(c: Context) {
+		const { page, limit } = await c.req.query();
+
+		const { parsedPage, parsedLimit } = this.pagination.getPaginationValues(page, limit);
+
+		const dentists = await this.dentistService.fetchDentists(parsedPage, parsedLimit);
+
+		return c.json(dentists);
+	}
+
+	async fetchDentistById(c: Context) {
+		const id = await c.req.param('id');
+
+		if (!id) {
+			throw new HTTPException(401, { message: 'Missing dentist id' });
+		}
+
+		const parsedId = parseInt(id);
+
+		if (isNaN(parsedId)) {
+			throw new HTTPException(401, { message: 'Invalid dentist id' });
+		}
+
+		const dentist = await this.dentistService.fetchById(parsedId);
+
+		return c.json(dentist);
 	}
 
 	private isValidData(data: Partial<DentistTableTypes>): boolean {

@@ -45,6 +45,7 @@ export const childTable = sqliteTable('Child', {
 	fatherId: int('father_id')
 		.references(() => userTable.userId)
 		.notNull(), // NOTE: Para evitar el error en dao
+	dentistId: int('dentist_id').references(() => dentistTable.userId),
 	name: text('name', { length: 255 }).notNull(),
 	lastName: text('last_name', { length: 255 }).notNull(),
 	gender: text('gender', { length: 1, enum: ['M', 'F'] }).notNull(),
