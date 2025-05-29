@@ -3,13 +3,13 @@ import { AppointmentController } from './appointment.controller';
 
 type Variables = {
 	appointmentController: AppointmentController;
-  };
-  
-  const appointmentRouter = new Hono<{ Variables: Variables }>();
+};
+
+const appointmentRouter = new Hono<{ Variables: Variables }>();
 
 appointmentRouter.use('*', async (c, next) => {
 	if (!c.var.appointmentController) {
-	  c.set('appointmentController', new AppointmentController(c));
+		c.set('appointmentController', new AppointmentController(c));
 	}
 	await next();
 });
