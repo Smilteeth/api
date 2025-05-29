@@ -42,13 +42,13 @@ export class AppointmentController {
 	}
 
 	async fetchAppointmentById(c: Context) {
-		const { appointmentId } = await c.req.query();
+		const id = await c.req.param('id');
 
-		if (!appointmentId) {
+		if (!id) {
 			throw new HTTPException(401, { message: 'Missing appointment id' });
 		}
 
-		const parsedId = parseInt(appointmentId);
+		const parsedId = parseInt(id);
 
 		if (isNaN(parsedId)) {
 			throw new HTTPException(401, { message: 'Invalid appointment id' });
@@ -60,7 +60,7 @@ export class AppointmentController {
 	}
 
 	async deactivateAppointment(c: Context) {
-		const { data } = await c.req.json();
+		const data = await c.req.json();
 
 		const deactivationType = ['FINISHED', 'CANCELLED', 'RESCHEDULED'];
 
@@ -73,6 +73,8 @@ export class AppointmentController {
 		}
 
 		await this.appointmentService.deactiveAppointment(data);
+
+		return c.json({ message: 'Appointment deactivated' }, 201);
 	}
 
 	private getPaginationValues(page: string, limit: string) {

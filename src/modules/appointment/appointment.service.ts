@@ -56,7 +56,7 @@ export class AppointmentService {
 		const appointmentData = await this.appointmentDao.fetchById(appointmentId);
 
 		if (!appointmentData) {
-			throw new HTTPException(404, { message: 'Appointment no found' });
+			throw new HTTPException(404, { message: 'Appointment not found' });
 		}
 
 		if (appointmentData.fatherId !== this.jwtPayload.userId && appointmentData.dentistId !== this.jwtPayload.userId) {
@@ -77,7 +77,11 @@ export class AppointmentService {
 		const appointment = await this.appointmentDao.fetchById(appointmentId);
 
 		if (!appointment) {
-			throw new HTTPException(404, { message: 'Appointnment not found' });
+			throw new HTTPException(404, { message: 'Appointment not found' });
+		}
+
+		if (!appointment.isActive) {
+			throw new HTTPException(401, { message: 'Appointment already deactivated' });
 		}
 
 		if (!this.dateValidator.appointmentCanBeInactivated(appointment.creationDate!)) {

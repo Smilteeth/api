@@ -4,8 +4,6 @@ import { HTTPResponseError } from 'hono/types';
 import { d1Errors } from '../utils/d1Errors';
 
 export function handleError(err: Error | HTTPResponseError, c: Context) {
-	console.log(err.message);
-
 	if (err.message.includes('D1_ERROR')) {
 		const error = d1Errors[err.message.split(' ')[1]];
 

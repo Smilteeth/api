@@ -23,7 +23,7 @@ export class AppointmentDao implements DataAccessObject<AppointmentTableTypes> {
 		id: number
 	): Promise<Array<Omit<AppointmentTableTypes, 'lastModificationDate'>> | undefined> {
 		return await this.db.query.appointmentTable.findMany({
-			where: (model, { eq, or }) => and(or(eq(model.fatherId, id), eq(model.dentistId, id)), eq(model.isActive, true)),
+			where: (model, { eq, or }) => or(eq(model.fatherId, id), eq(model.dentistId, id)),
 			columns: {
 				lastModificationDate: false
 			},
@@ -33,22 +33,22 @@ export class AppointmentDao implements DataAccessObject<AppointmentTableTypes> {
 
 	async fetchById(id: number): Promise<AppointmentTableTypes | undefined> {
 		return await this.db.query.appointmentTable.findFirst({
-			where: (model, { eq }) => and(eq(model.appointmentId, id), eq(model.isActive, true))
+			where: (model, { eq }) => eq(model.appointmentId, id)
 		});
 	}
 
 	// operations with inactive appointment
 	async deactivateAppointment(data: Omit<DeactiveAppointmentTableTypes, 'deactivationDate'>) {
-		await this.db.transaction(async (tx) => {
-			await tx
+		await this.db.batch([
+			this.db
 				.update(appointmentTable)
 				.set({ isActive: false })
 				.where(
 					and(eq(appointmentTable.appointmentId, data.deactiveAppointmentId), eq(appointmentTable.isActive, true))
-				);
+				),
 
-			await tx.insert(deactiveAppointmentTable).values(data);
-		});
+			this.db.insert(deactiveAppointmentTable).values(data)
+		]);
 	}
 
 	async fetchDeactiveAppointmentById(id: number) {
