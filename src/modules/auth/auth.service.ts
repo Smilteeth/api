@@ -17,36 +17,32 @@ export class AuthService {
 	}
 
 	async create(data: Omit<UserTableTypes, 'userId'>): Promise<void> {
-		try {
-			const password = await hashPassword(data.password);
+		const password = await hashPassword(data.password);
 
-			await this.authDao.create({ ...data, password });
-		} catch (error) {
-			throw error;
+		if (!password) {
+			throw new HTTPException(401, { message: "Couldn't create password" });
 		}
+
+		await this.authDao.create({ ...data, password });
 	}
 
 	async findIdByEmail(data: LogInData): Promise<{ token: string; exp: number; type: string }> {
-		try {
-			const user = await this.authDao.findIdByEmail(data.email);
+		const user = await this.authDao.findIdByEmail(data.email);
 
-			if (!user) {
-				throw new HTTPException(404, { message: 'User not found' });
-			}
-
-			const isValid = await new Validator().validatePassword(data.password, user.password);
-
-			if (!isValid) {
-				throw new HTTPException(401, { message: 'Invalid password' });
-			}
-
-			const { userId, type } = user;
-
-			const { token, exp } = await this.jwtUtil.generateJwt(userId, type);
-
-			return { token, exp, type: user.type };
-		} catch (error) {
-			throw error;
+		if (!user) {
+			throw new HTTPException(404, { message: 'User not found' });
 		}
+
+		const isValid = await new Validator().validatePassword(data.password, user.password);
+
+		if (!isValid) {
+			throw new HTTPException(401, { message: 'Invalid password' });
+		}
+
+		const { userId, type } = user;
+
+		const { token, exp } = await this.jwtUtil.generateJwt(userId, type);
+
+		return { token, exp, type: user.type };
 	}
 }

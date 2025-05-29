@@ -1,5 +1,5 @@
-import { AppointmentTableTypes, RescheduledAppointmentData } from './appointment.types';
-import { appointmentTable } from '../../config/db/schema';
+import { AppointmentTableTypes, DeactiveAppointmentTableTypes } from './appointment.types';
+import { appointmentTable, deactiveAppointmentTable } from '../../config/db/schema';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
 import { DataAccessObject } from '../../types/daos.interface';
 
@@ -21,11 +21,10 @@ export class AppointmentDao implements DataAccessObject<AppointmentTableTypes> {
 
 	async fetchUserAppointments(
 		id: number
-	): Promise<Array<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>> | undefined> {
+	): Promise<Array<Omit<AppointmentTableTypes, 'lastModificationDate'>> | undefined> {
 		return await this.db.query.appointmentTable.findMany({
-			where: (model, { eq, or }) => or(eq(model.fatherId, id), eq(model.dentistId, id)),
+			where: (model, { eq, or }) => and(or(eq(model.fatherId, id), eq(model.dentistId, id)), eq(model.isActive, true)),
 			columns: {
-				creationDate: false,
 				lastModificationDate: false
 			},
 			orderBy: (model, { asc }) => asc(model.appointmentDatetime)
@@ -34,36 +33,32 @@ export class AppointmentDao implements DataAccessObject<AppointmentTableTypes> {
 
 	async fetchById(id: number): Promise<AppointmentTableTypes | undefined> {
 		return await this.db.query.appointmentTable.findFirst({
-			where: (model, { eq }) => eq(model.appointmentId, id)
+			where: (model, { eq }) => and(eq(model.appointmentId, id), eq(model.isActive, true))
 		});
 	}
 
-	async deleteById(data: { id: number; dateModified: string }): Promise<void> {
-		await this.db
-			.update(appointmentTable)
-			.set({ isActive: false, lastModificationDate: data.dateModified })
-			.where(eq(appointmentTable.appointmentId, data.id));
-	}
+	// operations with inactive appointment
+	async deactivateAppointment(data: Omit<DeactiveAppointmentTableTypes, 'deactivationDate'>) {
+		await this.db.transaction(async (tx) => {
+			await tx
+				.update(appointmentTable)
+				.set({ isActive: false })
+				.where(
+					and(eq(appointmentTable.appointmentId, data.deactiveAppointmentId), eq(appointmentTable.isActive, true))
+				);
 
-	// operations with rescheduled appointment table
-	async addToRescheduled(data: RescheduledAppointmentData) {
-		await this.db.insert(schema.rescheduledAppointmentTable).values(data);
-	}
-
-	async fetchRescheduledAppointmentById(id: number) {
-		return await this.db.query.rescheduledAppointmentTable.findFirst({
-			where: (model, { eq }) => eq(model.appointmentId, id)
+			await tx.insert(deactiveAppointmentTable).values(data);
 		});
 	}
 
-	async fetchUserRescheduledAppointments(id: number): Promise<Array<RescheduledAppointmentData>> {
+	async fetchDeactiveAppointmentById(id: number) {
 		return await this.db
 			.select()
-			.from(schema.rescheduledAppointmentTable)
+			.from(deactiveAppointmentTable)
 			.where(
 				and(
 					eq(appointmentTable.fatherId, id),
-					eq(appointmentTable.appointmentId, schema.rescheduledAppointmentTable.appointmentId)
+					eq(appointmentTable.appointmentId, deactiveAppointmentTable.deactiveAppointmentId)
 				)
 			);
 	}

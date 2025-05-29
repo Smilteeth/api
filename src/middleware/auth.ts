@@ -1,5 +1,4 @@
 import { Context, Next } from 'hono';
-import { HTTPException } from 'hono/http-exception';
 import { jwt } from 'hono/jwt';
 import { Validator } from '../utils/validator';
 

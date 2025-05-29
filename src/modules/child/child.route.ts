@@ -1,10 +1,20 @@
 import { Hono } from 'hono';
 import { ChildController } from './child.controller';
 
-const childRouter = new Hono();
+type Variables = {
+	childController: ChildController;
+};
 
-const childController = new ChildController();
+const childRouter = new Hono<{ Variables: Variables }>();
 
-childRouter.put('/', (c) => childController.create(c));
+childRouter.use('*', async (c, next) => {
+	if (!c.var.childController) {
+		c.set('childController', new ChildController(c));
+	}
+
+	await next();
+});
+
+childRouter.put('/', (c) => c.get('childController').create(c));
 
 export default childRouter;

@@ -1,10 +1,20 @@
 import { Hono } from 'hono';
 import { DentistController } from './dentist.controller';
 
-const dentistRouter = new Hono();
+type Variables = {
+	dentistController: DentistController;
+};
 
-const dentistController = new DentistController();
+const dentistRouter = new Hono<{ Variables: Variables }>();
 
-dentistRouter.put('/', (c) => dentistController.create(c));
+dentistRouter.use('*', async (c, next) => {
+	if (!c.var.dentistController) {
+		c.set('dentistController', new DentistController(c));
+	}
+
+	await next();
+});
+
+dentistRouter.put('/', (c) => c.get('dentistController').create(c));
 
 export default dentistRouter;
