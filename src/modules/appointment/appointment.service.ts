@@ -3,17 +3,19 @@ import { JwtPayload } from '../../types/payload.type';
 import { AppointmentDao } from './appointment.dao';
 import { AppointmentTableTypes, DeactiveAppointmentTableTypes } from './appointment.types';
 import { DateValidator } from '../../utils/DateValidator';
-import { pagination, PaginationType } from '../../utils/pagination';
+import { Pagination, PaginationType } from '../../utils/pagination';
 
 export class AppointmentService {
 	private appointmentDao: AppointmentDao;
 	private jwtPayload: JwtPayload;
 	private dateValidator: DateValidator;
+	private pagination: Pagination;
 
 	constructor(dao: AppointmentDao, jwtPayload: JwtPayload) {
 		this.appointmentDao = dao;
 		this.jwtPayload = jwtPayload;
 		this.dateValidator = new DateValidator();
+		this.pagination = new Pagination();
 	}
 
 	async create(data: Omit<AppointmentTableTypes, 'appointmentId'>) {
@@ -45,7 +47,7 @@ export class AppointmentService {
 			throw new HTTPException(404, { message: "User doesn't have appointments" });
 		}
 
-		return pagination<Omit<AppointmentTableTypes, 'lastModificationDate'>>(appointments, page, limit);
+		return this.pagination.generate<Omit<AppointmentTableTypes, 'lastModificationDate'>>(appointments, page, limit);
 	}
 
 	async fetchById(appointmentId: number): Promise<Omit<AppointmentTableTypes, 'lastModificationDate'>> {

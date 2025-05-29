@@ -15,6 +15,8 @@ childRouter.use('*', async (c, next) => {
 	await next();
 });
 
-childRouter.put('/', (c) => c.get('childController').create(c));
+childRouter.put('/', (c) => c.var.childController.create(c));
+childRouter.get('/', (c) => c.var.childController.fetchChilds(c));
+childRouter.get('/:id', (c) => c.var.childController.fetchChildById(c));
 
 export default childRouter;

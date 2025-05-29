@@ -4,14 +4,17 @@ import { HTTPException } from 'hono/http-exception';
 import { AppointmentService } from './appointment.service';
 import { ChildService } from '../child/child.service';
 import { ServiceFactory } from '../../core/service.factory';
+import { Pagination } from '../../utils/pagination';
 
 export class AppointmentController {
 	private appointmentService: AppointmentService;
 	private childService: ChildService;
+	private pagination: Pagination;
 
 	constructor(c: Context) {
 		this.appointmentService = new ServiceFactory(c).createService('appointment');
 		this.childService = new ServiceFactory(c).createService('child');
+		this.pagination = new Pagination();
 	}
 
 	async create(c: Context) {
@@ -30,7 +33,7 @@ export class AppointmentController {
 	async fetchUserAppointments(c: Context) {
 		const { page, limit } = await c.req.query();
 
-		const { parsedPage, parsedLimit } = this.getPaginationValues(page, limit);
+		const { parsedPage, parsedLimit } = this.pagination.getPaginationValues(page, limit);
 
 		const appointments = await this.appointmentService.fetchUserAppointments(parsedPage, parsedLimit);
 
@@ -75,16 +78,6 @@ export class AppointmentController {
 		await this.appointmentService.deactiveAppointment(data);
 
 		return c.json({ message: 'Appointment deactivated' }, 201);
-	}
-
-	private getPaginationValues(page: string, limit: string) {
-		const parsedPage = parseInt(page);
-		const parsedLimit = parseInt(limit);
-
-		return {
-			parsedPage: isNaN(parsedPage) ? 1 : parsedPage,
-			parsedLimit: isNaN(parsedLimit) ? 10 : parsedLimit
-		};
 	}
 
 	private isValidData(

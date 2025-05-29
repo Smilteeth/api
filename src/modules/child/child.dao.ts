@@ -20,6 +20,13 @@ export class ChildDao implements DataAccessObject<ChildTableTypes> {
 		await this.db.insert(childTable).values(data);
 	}
 
+	async fetchUserChilds(id: number): Promise<Array<Omit<ChildTableTypes, 'lastModificationDate'>> | undefined> {
+		return await this.db.query.childTable.findMany({
+			where: (model, { eq }) => eq(model.childId, id),
+			orderBy: (model, { asc }) => asc(model.creationDate)
+		});
+	}
+
 	async fetchById(id: number): Promise<ChildTableTypes | undefined> {
 		return await this.db.query.childTable.findFirst({
 			where: (model, { eq }) => eq(model.childId, id)
