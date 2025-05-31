@@ -1,7 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
 import { AppointmentTableTypes } from '../modules/appointment/appointment.types';
 
-enum DateStatus {
+export enum DateStatus {
 	Past = 'past',
 	Future = 'future',
 	Present = 'present'
@@ -11,27 +11,28 @@ export class DateValidator {
 	userIsAvailable(
 		appointments: Array<Omit<AppointmentTableTypes, 'creationDate' | 'lastModificationDate'>> | undefined,
 		appointmentDatetime: string
-	) {
+	): boolean{
 		if (!appointments) {
-			return;
+			return true;
 		}
 
 		if (appointments.some((appointment) => appointment.appointmentDatetime === appointmentDatetime)) {
-			throw new HTTPException(409, { message: 'Datetime occupied' });
+			return false;
 		}
+		return true
 	}
 
-	validFormat(appointmentDatetime: string) {
+	validFormat(appointmentDatetime: string): boolean {
 		const dateRegex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}(?:\.\d{3})?$/;
 
 		if (!dateRegex.test(appointmentDatetime)) {
-			throw new HTTPException(409, { message: 'Invalid datetime format' });
+			return false;
 		}
 
 		const appointmentDate = new Date(appointmentDatetime);
 
 		if (isNaN(appointmentDate.getTime())) {
-			throw new HTTPException(409, { message: 'Invalid datetime format' });
+			return false;
 		}
 
 		const parts = appointmentDatetime.split(/[- :]/).map(Number);
@@ -42,7 +43,7 @@ export class DateValidator {
 			appointmentDate.getMonth() !== month - 1 ||
 			appointmentDate.getDate() !== day
 		) {
-			throw new HTTPException(409, { message: 'Invalid datetime format' });
+			return false;
 		}
 
 		if (
@@ -50,8 +51,10 @@ export class DateValidator {
 			appointmentDate.getMinutes() !== minute ||
 			appointmentDate.getSeconds() !== second
 		) {
-			throw new HTTPException(409, { message: 'Invalid datetime format' });
+			return false;
 		}
+
+		return true;
 	}
 
 	isAppointmentDate(appointmentDatetime: string): DateStatus {
@@ -67,7 +70,7 @@ export class DateValidator {
 		}
 	}
 
-	appointmentCanBeInactivated(creationDate: string) {
+	appointmentCanBeInactivated(creationDate: string): boolean {
 		const appointmentDate = this.getAppointmentDate(creationDate);
 
 		const currentDate = this.getCurrentDate();

@@ -4,6 +4,7 @@ import { AppointmentData, AppointmentTableTypes, DeactiveAppointmentTableTypes }
 import { DateValidator } from '../../utils/DateValidator';
 import { Pagination, PaginationType } from '../../utils/pagination';
 import { HTTPException } from 'hono/http-exception';
+import { ContentfulStatusCode } from 'hono/utils/http-status';
 
 export class AppointmentService {
 	private appointmentDao: AppointmentDao;
@@ -18,17 +19,25 @@ export class AppointmentService {
 		this.pagination = new Pagination();
 	}
 
-	async create(data: Omit<AppointmentTableTypes, 'appointmentId'>) {
-		this.dateValidator.validFormat(data.appointmentDatetime);
+	async create(
+		data: Omit<AppointmentTableTypes, 'appointmentId' | 'lastModificationDate' | 'isActive' | 'creationDate'>
+	) {
+		if (!this.dateValidator.validFormat(data.appointmentDatetime)) {
+			throw new HTTPException(409, { message: 'Invalid datetime format' });
+		}
 
 		const [dentistAppointments, childAppointments] = await Promise.all([
 			this.appointmentDao.fetchUserAppointments(data.dentistId!),
 			this.appointmentDao.fetchUserAppointments(data.childId!)
 		]);
 
-		this.dateValidator.userIsAvailable(dentistAppointments, data.appointmentDatetime);
+		if (!this.dateValidator.userIsAvailable(dentistAppointments, data.appointmentDatetime)) {
+			throw new HTTPException(409, { message: 'Dentist occupied' });
+		}
 
-		this.dateValidator.userIsAvailable(childAppointments, data.appointmentDatetime);
+		if (!this.dateValidator.userIsAvailable(childAppointments, data.appointmentDatetime)) {
+			throw new HTTPException(409, { message: 'Child already has an appointment for that datetime' });
+		}
 
 		if (this.dateValidator.isAppointmentDate(data.appointmentDatetime) !== 'future') {
 			throw new HTTPException(409, { message: 'Appointments can only be scheduled for a future date.' });
@@ -70,30 +79,40 @@ export class AppointmentService {
 
 	// operations with inactive appointment
 	async deactiveAppointment(data: Omit<DeactiveAppointmentTableTypes, 'deactivationDate'>) {
-		await this.validateAppointment(data.deactiveAppointmentId);
+		const validateAppointment = await this.validateAppointment(data.deactiveAppointmentId);
+
+		if (!validateAppointment.result) {
+			throw new HTTPException(validateAppointment.errorCode, { message: validateAppointment.message });
+		}
 
 		await this.appointmentDao.deactivateAppointment(data);
 	}
 
-	private async validateAppointment(appointmentId: number) {
+	async validateAppointment(
+		appointmentId: number
+	): Promise<{ result: boolean; message: string; errorCode?: ContentfulStatusCode }> {
 		const appointment = await this.appointmentDao.fetchById(appointmentId);
 
 		if (!appointment) {
-			throw new HTTPException(404, { message: 'Appointment not found' });
+			return { result: false, message: 'Appointment not found', errorCode: 404 };
 		}
 
 		if (!appointment.isActive) {
-			throw new HTTPException(401, { message: 'Appointment already deactivated' });
+			return { result: false, message: 'Appointment already deactivated', errorCode: 401 };
 		}
 
 		if (!this.dateValidator.appointmentCanBeInactivated(appointment.creationDate!)) {
-			throw new HTTPException(409, {
-				message: "Appointnments only can be cancelled or rescheduled if 24 hours haven't passed from the creation"
-			});
+			return {
+				result: false,
+				message: "Appointnments only can be cancelled or rescheduled if 24 hours haven't passed from the creation",
+				errorCode: 409
+			};
 		}
 
 		if (this.dateValidator.isAppointmentDate(appointment.appointmentDatetime) !== 'future') {
-			throw new HTTPException(409, { message: 'Only future appointments can be cancelled or rescheduled' });
+			return { result: false, message: 'Only future appointments can be cancelled or rescheduled', errorCode: 409 };
 		}
+
+		return { result: true, message: 'Valid appointment' };
 	}
 }
