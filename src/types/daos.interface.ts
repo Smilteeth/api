@@ -8,19 +8,21 @@
  */
 
 export interface DataAccessObject<D> {
-	/**
-	 * Creates a new record in the database
-	 *
-	 * @param {D} data The data to store in the database
-	 * @returns {void} This method doesn't return any value
-	 */
-	create(data: D): Promise<void>;
+  /**
+   * Creates a new record in the database
+   *
+   * @param {D} data The data to store in the database
+   * @returns {void} This method doesn't return any value
+   */
+  create(data: D): Promise<void>;
 
-	/**
-	 * Fetches a record by its ID
-	 *
-	 * @param{number} id The identifier of the record to fetch
-	 * @returns {Promise<D>} A promise that resolves once the data is fetched (if no data found it'll return undefined)
-	 */
-	fetchById(id: number): Promise<D | undefined>;
+  /**
+   * Fetches a record by its ID
+   *
+   * @param{number} id The identifier of the record to fetch
+   * @returns {Promise<D>} A promise that resolves once the data is fetched (if no data found it'll return undefined)
+   */
+  fetchById(id: number, userId?: number): Promise<D | undefined>;
+
+
 }
