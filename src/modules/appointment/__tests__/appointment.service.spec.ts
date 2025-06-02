@@ -92,7 +92,7 @@ describe('Tests for Appointment Service', () => {
 		});
 	});
 
-	describe('Fetch Appointment By Id', () => {
+	describe('Fetch Appointment', () => {
 		it('Successful fetch', async () => {
 			const fakeAppointment: AppointmentData = {
 				appointmentId: 1,
