@@ -10,6 +10,18 @@ export class DentistService {
   private jwtPayload: JwtPayload;
   private pagination: Pagination;
 
+  private editableKeys = [
+    'university',
+    'speciality',
+    'about',
+    'serviceStartTime',
+    'serviceEndTime',
+    'phoneNumber',
+    'latitude',
+    'longitude',
+  ] as const;
+
+
   constructor(dao: DentistDao, jwtPayload: JwtPayload) {
     this.dentistDao = dao;
     this.jwtPayload = jwtPayload;
@@ -28,17 +40,6 @@ export class DentistService {
   }
 
   async edit(data: Partial<EditableData>) {
-    const editableKeys = [
-      'university',
-      'speciality',
-      'about',
-      'serviceStartTime',
-      'serviceEndTime',
-      'phoneNumber',
-      'latitude',
-      'longitude',
-    ] as const;
-
     if (!data) {
       throw new HTTPException(409, { message: "Data no provided" });
     }
@@ -47,21 +48,12 @@ export class DentistService {
       throw new HTTPException(401, { message: "User can't edit dentist" });
     }
 
-    const keys = Object.keys(data);
-    const editableKeySet = new Set(editableKeys);
-
-    if (keys.length === 0) {
-      throw new HTTPException(409, {
-        message: "No fields provied"
-      });
-    }
-
-    if (keys.some(key => !editableKeySet.has(key as EditableField))) {
-      throw new HTTPException(409, { message: "Invalid field provided" });
-    }
+    this.validateKeys(data);
 
     await this.dentistDao.edit(data, this.jwtPayload.userId);
   }
+
+
 
   async fetchDentists(
     page: number,
@@ -118,6 +110,21 @@ export class DentistService {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  private validateKeys(data: Partial<EditableData>) {
+    const keys = Object.keys(data);
+    const editableKeySet = new Set(this.editableKeys);
+
+    if (keys.length === 0) {
+      throw new HTTPException(409, {
+        message: "No fields provied"
+      });
+    }
+
+    if (keys.some(key => !editableKeySet.has(key as EditableField))) {
+      throw new HTTPException(409, { message: "Invalid field provided" });
     }
   }
 }
