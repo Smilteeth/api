@@ -4,7 +4,7 @@ import { DrizzleD1Database } from 'drizzle-orm/d1';
 
 import * as schema from '../../config/db/schema';
 import { DataAccessObject } from '../../types/daos.interface';
-import { and, asc, desc, eq, getTableColumns, or, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
 /**
