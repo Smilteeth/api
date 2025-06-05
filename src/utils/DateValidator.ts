@@ -94,7 +94,7 @@ export class DateValidator {
     return appointmentDate;
   }
 
-  private getCurrentDate() {
+  getCurrentDate() {
     return new Date();
   }
 }

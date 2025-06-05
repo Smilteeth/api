@@ -13,7 +13,6 @@ export type EditableField = 'university'
   | 'longitude';
 
 export type EditableData = {
-  userId: number;
   speciality?: string | SQL<unknown>;
   about?: string | SQL<unknown>;
   serviceStartTime?: string | SQL<unknown>;

@@ -18,10 +18,10 @@ export class DentistDao implements DataAccessObject<DentistTableTypes> {
     await this.db.insert(dentistTable).values(data);
   }
 
-  async edit(data: EditableData) {
+  async edit(data: EditableData, userId: number) {
     await this.db.update(dentistTable)
       .set(data)
-      .where(eq(dentistTable.userId, data.userId))
+      .where(eq(dentistTable.userId, userId))
 
   }
 

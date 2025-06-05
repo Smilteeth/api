@@ -1,6 +1,6 @@
 import { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { ChildTableTypes } from './child.types';
+import { ChildTableTypes, EditableData } from './child.types';
 import { ChildService } from './child.service';
 import { ServiceFactory } from '../../core/service.factory';
 import { Pagination } from '../../utils/pagination';
@@ -30,6 +30,14 @@ export class ChildController {
     await this.childService.create(data);
 
     return c.json({ message: 'Child added' }, 201);
+  }
+
+  async edit(c: Context) {
+    const data: Partial<EditableData> = await c.req.json();
+
+    await this.childService.edit(data);
+
+    return c.json({ message: 'Successfully edited', updatedFields: Object.keys(data) }, 200);
   }
 
   async fetchChilds(c: Context) {

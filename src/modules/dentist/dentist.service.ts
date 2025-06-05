@@ -39,6 +39,9 @@ export class DentistService {
       'longitude',
     ] as const;
 
+    if (!data) {
+      throw new HTTPException(409, { message: "Data no provided" });
+    }
 
     if (this.jwtPayload.type === "FATHER") {
       throw new HTTPException(401, { message: "User can't edit dentist" });
@@ -57,10 +60,7 @@ export class DentistService {
       throw new HTTPException(409, { message: "Invalid field provided" });
     }
 
-    await this.dentistDao.edit({
-      ...data,
-      userId: this.jwtPayload.userId,
-    });
+    await this.dentistDao.edit(data, this.jwtPayload.userId);
   }
 
   async fetchDentists(
