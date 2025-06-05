@@ -16,9 +16,10 @@ export class DateValidator {
       return true;
     }
 
-    if (appointments.some((appointment) => (appointment.appointmentDatetime === appointmentDatetime && !appointment.isActive))) {
+    if (appointments.some((appointment) => (appointment.appointmentDatetime === appointmentDatetime && appointment.isActive))) {
       return false;
     }
+
     return true
   }
 
