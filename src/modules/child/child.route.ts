@@ -15,6 +15,8 @@ childRouter.use('*', async (c, next) => {
   await next();
 });
 
+childRouter.put('/brush', (c) => c.var.childController.addBrush(c));
+childRouter.get('/brush', (c) => c.var.childController.fetchChildBrushes(c));
 childRouter.put('/edit', (c) => c.var.childController.edit(c));
 childRouter.put('/', (c) => c.var.childController.create(c));
 childRouter.get('/', (c) => c.var.childController.fetchChilds(c));

@@ -4,6 +4,7 @@ import { ChildTableTypes, EditableData } from './child.types';
 import { ChildService } from './child.service';
 import { ServiceFactory } from '../../core/service.factory';
 import { Pagination } from '../../utils/pagination';
+import { parse } from 'dotenv';
 
 export class ChildController {
   private childService: ChildService;
@@ -53,6 +54,36 @@ export class ChildController {
   async fetchChildById(c: Context) {
     const id = c.req.param('id');
 
+    const parsedId = this.validateId(id);
+
+    const child = await this.childService.fetchById(parsedId);
+
+    return c.json(child);
+  }
+
+  async addBrush(c: Context) {
+    const { id } = c.req.query();
+
+    const parsedId = this.validateId(id);
+
+    await this.childService.addBrush(parsedId);
+
+    return c.json({ message: 'Brush added' }, 200);
+  }
+
+  async fetchChildBrushes(c: Context) {
+    const { id, page, limit } = c.req.query();
+
+    const { parsedPage, parsedLimit } = this.pagination.getPaginationValues(page, limit);
+
+    const parsedId = this.validateId(id);
+
+    const brushes = await this.childService.getBrushes(parsedId, parsedPage, parsedLimit);
+
+    return c.json(brushes);
+  }
+
+  private validateId(id: string) {
     if (!id) {
       throw new HTTPException(401, { message: 'Missing child id' });
     }
@@ -63,9 +94,8 @@ export class ChildController {
       throw new HTTPException(401, { message: 'Invalid child id' });
     }
 
-    const child = await this.childService.fetchById(parsedId);
+    return parsedId;
 
-    return c.json(child);
   }
 
   private isValidData(data: Partial<ChildTableTypes>) {

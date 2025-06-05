@@ -1,9 +1,10 @@
 import { HTTPException } from 'hono/http-exception';
 import { JwtPayload } from '../../types/payload.type';
 import { ChildDao } from './child.dao';
-import { ChildData, ChildReturnType, ChildTableTypes, EditableData, EditableField } from './child.types';
+import { BrushType, ChildData, ChildReturnType, ChildTableTypes, EditableData, EditableField } from './child.types';
 import { Pagination, PaginationType } from '../../utils/pagination';
 import { DateValidator } from '../../utils/DateValidator';
+import { a } from 'vitest/dist/chunks/suite.d.FvehnV49.js';
 
 export class ChildService {
   private childDao: ChildDao;
@@ -56,8 +57,6 @@ export class ChildService {
       data.childId);
   }
 
-
-
   async fetchUserChilds(
     page: number,
     limit: number
@@ -83,6 +82,24 @@ export class ChildService {
 
     return child;
   }
+
+  async addBrush(childId: number) {
+    await this.fetchById(childId);
+
+    await this.childDao.addBrush(childId);
+  }
+
+  async getBrushes(childId: number, page: number, limit: number): Promise<PaginationType<BrushType>> {
+    await this.fetchById(childId);
+
+    const brushes = await this.childDao.getChildBrushes(childId);
+
+    if (!brushes) {
+      throw new HTTPException(404, { message: 'Brushes not found' });
+    }
+
+    return this.pagination.generate(brushes, page, limit);
+  };
 
   private validateKeys(data: Partial<EditableData>) {
     const keys = Object.keys(data);
