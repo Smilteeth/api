@@ -15,6 +15,7 @@ dentistRouter.use('*', async (c, next) => {
   await next();
 });
 
+dentistRouter.get('/edit', (c) => c.var.dentistController.edit(c));
 dentistRouter.get('/is-form-filled', (c) => c.var.dentistController.isFormFilled(c));
 dentistRouter.put('/', (c) => c.var.dentistController.create(c));
 dentistRouter.get('/', (c) => c.var.dentistController.fetchDentists(c));

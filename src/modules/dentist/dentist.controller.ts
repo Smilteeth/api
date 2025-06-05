@@ -1,6 +1,6 @@
 import { Context } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { DentistTableTypes } from './dentist.types';
+import { DentistTableTypes, EditableData } from './dentist.types';
 import { ServiceFactory } from '../../core/service.factory';
 import { DentistService } from './dentist.service';
 import { Pagination } from '../../utils/pagination';
@@ -25,6 +25,14 @@ export class DentistController {
     await this.dentistService.create(data);
 
     return c.json({ message: 'Successful registration' }, 201);
+  }
+
+  async edit(c: Context) {
+    const data: Partial<EditableData> = await c.req.json();
+
+    await this.dentistService.edit(data);
+
+    return c.json({ message: 'Successfully edited', updatedFields: Object.keys(data) }, 200);
   }
 
   async fetchDentists(c: Context) {

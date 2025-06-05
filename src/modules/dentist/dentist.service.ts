@@ -1,7 +1,7 @@
 import { HTTPException } from 'hono/http-exception';
 import { JwtPayload } from '../../types/payload.type';
 import { DentistDao } from './dentist.dao';
-import { DentistTableTypes } from './dentist.types';
+import { DentistTableTypes, EditableData, EditableField } from './dentist.types';
 import { Pagination, PaginationType } from '../../utils/pagination';
 import { UserTableTypes } from '../auth/auth.types';
 
@@ -24,6 +24,42 @@ export class DentistService {
     await this.dentistDao.create({
       userId: this.jwtPayload.userId,
       ...data
+    });
+  }
+
+  async edit(data: Partial<EditableData>) {
+    const editableKeys = [
+      'university',
+      'speciality',
+      'about',
+      'serviceStartTime',
+      'serviceEndTime',
+      'phoneNumber',
+      'latitude',
+      'longitude',
+    ] as const;
+
+
+    if (this.jwtPayload.type === "FATHER") {
+      throw new HTTPException(401, { message: "User can't edit dentist" });
+    }
+
+    const keys = Object.keys(data);
+    const editableKeySet = new Set(editableKeys);
+
+    if (keys.length === 0) {
+      throw new HTTPException(409, {
+        message: "No fields provied"
+      });
+    }
+
+    if (keys.some(key => !editableKeySet.has(key as EditableField))) {
+      throw new HTTPException(409, { message: "Invalid field provided" });
+    }
+
+    await this.dentistDao.edit({
+      ...data,
+      userId: this.jwtPayload.userId,
     });
   }
 
