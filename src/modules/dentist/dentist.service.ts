@@ -73,18 +73,15 @@ export class DentistService {
   }
 
   async isFormFilled(): Promise<boolean> {
-    try {
-      if (this.jwtPayload.type === "FATHER") {
-        throw new HTTPException(401, { message: "Father doen't need to fill a form" });
-      }
+    if (this.jwtPayload.type === "FATHER") {
+      throw new HTTPException(401, { message: "Father doen't need to fill a form" });
+    }
 
+    try {
       await this.fetchById(this.jwtPayload.userId);
       return true;
     } catch (e) {
-
       return false;
     }
-
-
   }
 }
