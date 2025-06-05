@@ -6,65 +6,71 @@ import { DentistService } from './dentist.service';
 import { Pagination } from '../../utils/pagination';
 
 export class DentistController {
-	private dentistService: DentistService;
+  private dentistService: DentistService;
 
-	private pagination: Pagination;
+  private pagination: Pagination;
 
-	constructor(c: Context) {
-		this.dentistService = new ServiceFactory(c).createService('dentist');
-		this.pagination = new Pagination();
-	}
+  constructor(c: Context) {
+    this.dentistService = new ServiceFactory(c).createService('dentist');
+    this.pagination = new Pagination();
+  }
 
-	async create(c: Context) {
-		const data: Omit<DentistTableTypes, 'userId'> = await c.req.json();
+  async create(c: Context) {
+    const data: Omit<DentistTableTypes, 'userId'> = await c.req.json();
 
-		if (!this.isValidData(data)) {
-			throw new HTTPException(400, { message: 'Missing attribute' });
-		}
+    if (!this.isValidData(data)) {
+      throw new HTTPException(400, { message: 'Missing attribute' });
+    }
 
-		await this.dentistService.create(data);
+    await this.dentistService.create(data);
 
-		return c.json({ message: 'Successful registration' }, 201);
-	}
+    return c.json({ message: 'Successful registration' }, 201);
+  }
 
-	async fetchDentists(c: Context) {
-		const { page, limit } = await c.req.query();
+  async fetchDentists(c: Context) {
+    const { page, limit } = c.req.query();
 
-		const { parsedPage, parsedLimit } = this.pagination.getPaginationValues(page, limit);
+    const { parsedPage, parsedLimit } = this.pagination.getPaginationValues(page, limit);
 
-		const dentists = await this.dentistService.fetchDentists(parsedPage, parsedLimit);
+    const dentists = await this.dentistService.fetchDentists(parsedPage, parsedLimit);
 
-		return c.json(dentists);
-	}
+    return c.json(dentists);
+  }
 
-	async fetchDentistById(c: Context) {
-		const id = await c.req.param('id');
+  async fetchDentistById(c: Context) {
+    const id = c.req.param('id');
 
-		if (!id) {
-			throw new HTTPException(401, { message: 'Missing dentist id' });
-		}
+    if (!id) {
+      throw new HTTPException(401, { message: 'Missing dentist id' });
+    }
 
-		const parsedId = parseInt(id);
+    const parsedId = parseInt(id);
 
-		if (isNaN(parsedId)) {
-			throw new HTTPException(401, { message: 'Invalid dentist id' });
-		}
+    if (isNaN(parsedId)) {
+      throw new HTTPException(401, { message: 'Invalid dentist id' });
+    }
 
-		const dentist = await this.dentistService.fetchById(parsedId);
+    const dentist = await this.dentistService.fetchById(parsedId);
 
-		return c.json(dentist);
-	}
+    return c.json(dentist)
+  }
 
-	private isValidData(data: Partial<DentistTableTypes>): boolean {
-		const requiredFields: Array<keyof DentistTableTypes> = [
-			'professionalLicense',
-			'serviceStartTime',
-			'serviceEndTime',
-			'phoneNumber',
-			'latitude',
-			'longitude'
-		];
+  async isFormFilled(c: Context) {
+    const isFilled = await this.dentistService.isFormFilled();
 
-		return requiredFields.every((field) => Boolean(data[field]));
-	}
+    return c.text(isFilled.toString());
+  }
+
+  private isValidData(data: Partial<DentistTableTypes>): boolean {
+    const requiredFields: Array<keyof DentistTableTypes> = [
+      'professionalLicense',
+      'serviceStartTime',
+      'serviceEndTime',
+      'phoneNumber',
+      'latitude',
+      'longitude'
+    ];
+
+    return requiredFields.every((field) => Boolean(data[field]));
+  }
 }
