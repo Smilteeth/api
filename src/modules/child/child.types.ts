@@ -17,8 +17,6 @@ export type ChildData = {
 
 export type ChildReturnType = Omit<ChildTableTypes, 'lastModificationDate'> & { father: string; dentist: string; };
 
-
-
 export type EditableField = 'name'
   | 'lastName'
   | 'gender'
@@ -38,3 +36,5 @@ export type EditableData = {
   afternoonBrushingTime?: string | SQL<unknown>;
   nightBrushingTime?: string | SQL<unknown>;
 }
+
+export type BrushType = dbTypes['BrushTable'];

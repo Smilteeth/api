@@ -68,6 +68,44 @@ export class ChildController {
     return c.json(child);
   }
 
+  async addBrush(c: Context) {
+    const { id } = c.req.query();
+
+    if (!id) {
+      throw new HTTPException(401, { message: 'Missing child id' });
+    }
+
+    const parsedId = parseInt(id);
+
+    if (isNaN(parsedId)) {
+      throw new HTTPException(401, { message: 'Invalid child id' });
+    }
+
+    await this.childService.addBrush(parsedId);
+
+    return c.json({ message: 'Brush added' }, 200);
+  }
+
+  async fetchChildBrushes(c: Context) {
+    const { id, page, limit } = c.req.query();
+
+    if (!id) {
+      throw new HTTPException(401, { message: 'Missing child id' });
+    }
+
+    const parsedId = parseInt(id);
+
+    if (isNaN(parsedId)) {
+      throw new HTTPException(401, { message: 'Invalid child id' });
+    }
+
+    const { parsedPage, parsedLimit } = this.pagination.getPaginationValues(page, limit);
+
+    const brushes = await this.childService.getBrushes(parsedId, parsedPage, parsedLimit);
+
+    return c.json(brushes);
+  }
+
   private isValidData(data: Partial<ChildTableTypes>) {
     const requiredFields: Array<keyof ChildTableTypes> = [
       'name',
