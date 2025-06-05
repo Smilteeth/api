@@ -101,15 +101,29 @@ export class AppointmentController {
     return requiredFields.every((field) => Boolean(data[field as keyof typeof data]));
   }
 
-  private isWithinServiceHours(appointmentDatetime: string, serviceStartTime: string, serviceEndTime: string) {
-    const parts = appointmentDatetime.split(/[- :]/).map(Number);
+  private isWithinServiceHours(
+    appointmentDatetime: string,
+    serviceStartTime: string,
+    serviceEndTime: string
+  ) {
+    const appointmentTime = new Date(appointmentDatetime);
+    const appointmentMinutes = appointmentTime.getHours() * 60 + appointmentTime.getMinutes();
 
-    const [year, month, day, hour, minute, second] = parts;
+    const [startHour, startMin] = serviceStartTime.split(':').map(Number);
+    const [endHour, endMin] = serviceEndTime.split(':').map(Number);
 
-    const dateHour = `${hour} : ${minute}`;
+    const startMinutes = startHour * 60 + startMin;
+    const endMinutes = endHour * 60 + endMin;
 
-    if (serviceStartTime > dateHour && serviceEndTime < dateHour) {
-      throw new HTTPException(409, { message: "Appointment is not in between dentist service hour" })
+    const isWithin =
+      startMinutes < endMinutes
+        ? appointmentMinutes >= startMinutes && appointmentMinutes <= endMinutes
+        : appointmentMinutes >= startMinutes || appointmentMinutes <= endMinutes;
+
+    if (!isWithin) {
+      throw new HTTPException(409, {
+        message: "Appointment is not within dentist service hours"
+      });
     }
   }
 }
