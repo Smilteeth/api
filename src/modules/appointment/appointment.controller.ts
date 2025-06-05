@@ -5,15 +5,18 @@ import { AppointmentService } from './appointment.service';
 import { ChildService } from '../child/child.service';
 import { ServiceFactory } from '../../core/service.factory';
 import { Pagination } from '../../utils/pagination';
+import { DentistService } from '../dentist/dentist.service';
 
 export class AppointmentController {
   private appointmentService: AppointmentService;
   private childService: ChildService;
+  private dentistService: DentistService;
   private pagination: Pagination;
 
   constructor(c: Context) {
     this.appointmentService = new ServiceFactory(c).createService('appointment');
     this.childService = new ServiceFactory(c).createService('child');
+    this.dentistService = new ServiceFactory(c).createService('dentist');
     this.pagination = new Pagination();
   }
 
@@ -25,13 +28,18 @@ export class AppointmentController {
     }
 
     const child = await this.childService.fetchById(data.childId!);
+
+    const dentist = await this.dentistService.fetchById(data.dentistId!);
+
+    this.isWithinServiceHours(data.appointmentDatetime, dentist.serviceStartTime, dentist.serviceEndTime)
+
     await this.appointmentService.create(data);
 
     return c.json({ message: `Appointment Scheduled for child named ${child.name}` }, 201);
   }
 
   async fetchUserAppointments(c: Context) {
-    const { page, limit } = await c.req.query();
+    const { page, limit } = c.req.query();
 
     const { parsedPage, parsedLimit } = this.pagination.getPaginationValues(page, limit);
 
@@ -45,7 +53,7 @@ export class AppointmentController {
   }
 
   async fetchAppointmentById(c: Context) {
-    const id = await c.req.param('id');
+    const id = c.req.param('id');
 
     if (!id) {
       throw new HTTPException(401, { message: 'Missing appointment id' });
@@ -91,5 +99,17 @@ export class AppointmentController {
 
     const requiredFields = fieldSets[mode] as Array<keyof AppointmentTableTypes | DeactiveAppointmentTableTypes>;
     return requiredFields.every((field) => Boolean(data[field as keyof typeof data]));
+  }
+
+  private isWithinServiceHours(appointmentDatetime: string, serviceStartTime: string, serviceEndTime: string) {
+    const parts = appointmentDatetime.split(/[- :]/).map(Number);
+
+    const [year, month, day, hour, minute, second] = parts;
+
+    const dateHour = `${hour} : ${minute}`;
+
+    if (serviceStartTime > dateHour && serviceEndTime < dateHour) {
+      throw new HTTPException(409, { message: "Appointment is not in between dentist service hour" })
+    }
   }
 }
