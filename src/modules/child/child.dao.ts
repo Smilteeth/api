@@ -1,10 +1,10 @@
-import { childTable, dentistTable, userTable } from '../../config/db/schema';
-import { ChildReturnType, ChildTableTypes } from './child.types';
+import { childTable, dentistTable, userTable, brushTable } from '../../config/db/schema';
+import { ChildReturnType, ChildTableTypes, EditableData } from './child.types';
 import { DrizzleD1Database } from 'drizzle-orm/d1';
 
 import * as schema from '../../config/db/schema';
 import { DataAccessObject } from '../../types/daos.interface';
-import { and, asc, desc, eq, getTableColumns, or, sql } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, or, sql } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
 /**
@@ -20,6 +20,12 @@ export class ChildDao implements DataAccessObject<ChildTableTypes | ChildReturnT
 
   async create(data: Omit<ChildTableTypes, 'childId' | 'userId' | 'lastModificationDate' | 'creationDate' | 'isActive'>): Promise<void> {
     await this.db.insert(childTable).values(data);
+  }
+
+  async edit(data: Omit<EditableData, 'childId'>, fatherId: number, childId: number) {
+    await this.db.update(childTable)
+      .set(data)
+      .where(and(eq(childTable.fatherId, fatherId), eq(childTable.childId, childId)));
   }
 
   async fetchUserChilds(id: number): Promise<Array<ChildReturnType> | undefined> {
@@ -58,5 +64,17 @@ export class ChildDao implements DataAccessObject<ChildTableTypes | ChildReturnT
     return child[0];
   }
 
+  async addBrush(childId: number) {
+    return await this.db.insert(brushTable).values({
+      childId: childId
+    });
 
+  }
+
+  async getChildBrushes(childId: number) {
+    return await this.db.query.brushTable.findMany({
+      where: (model, { eq }) => eq(model.childId, childId),
+      orderBy: (model, { desc }) => desc(model.brushDatetime)
+    })
+  }
 }

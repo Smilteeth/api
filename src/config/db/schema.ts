@@ -37,7 +37,7 @@ export const dentistTable = sqliteTable('Dentist', {
   phoneNumber: text('phone_number', { length: 10 }).notNull(),
   // the following attributes are for the office direction
   latitude: real('latitude').notNull(),
-  longitude: real('longitude').notNull()
+  longitude: real('longitude').notNull(),
 });
 
 export const childTable = sqliteTable('Child', {
@@ -221,7 +221,7 @@ export const transactionTable = sqliteTable('Transaction', {
 export const brushTable = sqliteTable('Brush', {
   brushId: int('brush_id').primaryKey({ autoIncrement: true }),
   childId: int('child_id').references(() => childTable.childId),
-  brushDatetime: text('brush_datetime', { length: 26 }).notNull()
+  brushDatetime: text('brush_datetime', { length: 26 }).default(sql`(CURRENT_TIMESTAMP)`)
 });
 
 export const mascotItemTable = sqliteTable('MascotItem', {
