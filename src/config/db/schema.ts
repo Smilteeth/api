@@ -37,7 +37,7 @@ export const dentistTable = sqliteTable('Dentist', {
   phoneNumber: text('phone_number', { length: 10 }).notNull(),
   // the following attributes are for the office direction
   latitude: real('latitude').notNull(),
-  longitude: real('longitude').notNull()
+  longitude: real('longitude').notNull(),
 });
 
 export const childTable = sqliteTable('Child', {
