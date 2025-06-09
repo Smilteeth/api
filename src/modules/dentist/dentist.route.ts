@@ -18,8 +18,8 @@ dentistRouter.use('*', async (c, next) => {
 dentistRouter.put('/edit', (c) => c.var.dentistController.edit(c));
 dentistRouter.put('/', (c) => c.var.dentistController.create(c));
 
-dentistRouter.get('/:id', (c) => c.var.dentistController.fetchDentistById(c));
 dentistRouter.get('/is-form-filled', (c) => c.var.dentistController.isFormFilled(c));
+dentistRouter.get('/:id', (c) => c.var.dentistController.fetchDentistById(c));
 dentistRouter.get('/', (c) => c.var.dentistController.fetchDentists(c));
 
 export default dentistRouter;
