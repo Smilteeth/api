@@ -38,6 +38,15 @@ export class CourseController {
     return c.json(await this.courseService.fetchLessonById(parsedId));
   }
 
+  async fetchQuestions(c: Context) {
+    const id = c.req.param('id');
+
+    const parsedId = this.getId(id);
+
+    return c.json(await this.courseService.fetchQuestions(parsedId));
+  }
+
+
   private getId(id: string) {
     if (!id) {
       throw new HTTPException(401, { message: 'Missing appointment id' });
@@ -51,4 +60,6 @@ export class CourseController {
 
     return parsedId;
   }
+
+
 }

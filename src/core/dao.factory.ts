@@ -5,8 +5,9 @@ import { DentistDao } from '../modules/dentist/dentist.dao';
 import { AppointmentDao } from '../modules/appointment/appointment.dao';
 import { ChildDao } from '../modules/child/child.dao';
 import { CourseDao } from '../modules/course/course.dao';
+import { TransactionDao } from '../modules/transaction/transaction.dao';
 
-type DaoType = 'auth' | 'dentist' | 'appointment' | 'child' | 'course';
+type DaoType = 'auth' | 'dentist' | 'appointment' | 'child' | 'course' | 'transaction';
 
 interface DaoMap {
   auth: AuthDao;
@@ -14,6 +15,7 @@ interface DaoMap {
   appointment: AppointmentDao;
   child: ChildDao;
   course: CourseDao;
+  transaction: TransactionDao;
 }
 
 export class DaoFactory {
@@ -29,7 +31,8 @@ export class DaoFactory {
       dentist: () => new DentistDao(db),
       appointment: () => new AppointmentDao(db),
       child: () => new ChildDao(db),
-      course: () => new CourseDao(db)
+      course: () => new CourseDao(db),
+      transaction: () => new TransactionDao(db)
     };
   }
 

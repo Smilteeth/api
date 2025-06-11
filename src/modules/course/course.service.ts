@@ -46,4 +46,24 @@ export class CourseService {
     return lesson;
   }
 
+  async fetchQuestions(id: number) {
+    const questions = await this.courseDao.fetchLessonQuestions(id);
+
+    if (!questions || questions.length === 0) {
+      throw new HTTPException(404, { message: "No questions found" });
+    }
+
+    const enrichedQuestions = await Promise.all(
+      questions.map(async (question) => {
+        const answers = await this.courseDao.fetchQuestionAnswers(question.questionId!);
+
+        return {
+          ...question,
+          answers: answers || []
+        };
+      })
+    );
+
+    return enrichedQuestions;
+  }
 }

@@ -5,6 +5,7 @@ import appointmentRouter from '../modules/appointment/appoinment.route';
 import courseRouter from '../modules/course/course.route';
 import childRouter from '../modules/child/child.route';
 import { handleError } from '../middleware/error';
+import transactionRouter from '../modules/transaction/transaction.route';
 
 const apiRouter = new Hono();
 
@@ -19,5 +20,7 @@ apiRouter.route('/appointment', appointmentRouter);
 apiRouter.route('/child', childRouter);
 
 apiRouter.route('/course', courseRouter);
+
+apiRouter.route('/transaction', transactionRouter);
 
 export default apiRouter;

@@ -1,6 +1,6 @@
 import { DrizzleD1Database } from "drizzle-orm/d1";
 import { DataAccessObject } from "../../types/daos.interface";
-import { CourseReturnType, CourseTableTypes, LessonType } from "./course.types";
+import { Answer, CourseReturnType, CourseTableTypes, LessonQuestions, LessonType } from "./course.types";
 
 import { courseTable, lessonTable } from '../../config/db/schema';
 
@@ -69,5 +69,26 @@ export class CourseDao implements DataAccessObject<CourseTableTypes | CourseRetu
         contentUrl: true
       }
     });
+  }
+
+  async fetchLessonQuestions(id: number): Promise<Array<LessonQuestions> | undefined> {
+    return await this.db.query.questionTable.findMany({
+      where: (model, { eq }) => eq(model.lessonId, id),
+      columns: {
+        question: true,
+        questionId: true
+      }
+    })
+  }
+
+  async fetchQuestionAnswers(id: number): Promise<Array<Answer> | undefined> {
+    return await this.db.query.answerTable.findMany({
+      where: (model, { eq }) => eq(model.questionId, id),
+      columns: {
+        questionId: true,
+        answer: true,
+        isCorrect: true
+      }
+    })
   }
 }

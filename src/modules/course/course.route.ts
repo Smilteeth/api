@@ -14,10 +14,9 @@ courseRouter.use('*', async (c, next) => {
   await next();
 });
 
+courseRouter.get('/question/:id', (c) => c.var.courseController.fetchQuestions(c));
 courseRouter.get('/lesson/:id', (c) => c.var.courseController.fetchLesson(c));
-
 courseRouter.get('/', (c) => c.var.courseController.fetchCourses(c));
-
 courseRouter.get('/:id', (c) => c.var.courseController.fetchCourse(c));
 
 export default courseRouter;
