@@ -5,8 +5,9 @@ import { DaoFactory } from './dao.factory';
 import { AppointmentService } from '../modules/appointment/appointment.service';
 import { ChildService } from '../modules/child/child.service';
 import { CourseService } from '../modules/course/course.service';
+import { TransactionService } from '../modules/transaction/transaction.service';
 
-type ServiceType = 'auth' | 'dentist' | 'appointment' | 'child' | 'course';
+type ServiceType = 'auth' | 'dentist' | 'appointment' | 'child' | 'course' | 'transaction';
 
 interface ServiceMap {
   auth: AuthService;
@@ -14,6 +15,7 @@ interface ServiceMap {
   appointment: AppointmentService;
   child: ChildService;
   course: CourseService;
+  transaction: TransactionService;
 }
 
 export class ServiceFactory {
@@ -31,7 +33,8 @@ export class ServiceFactory {
       dentist: () => new DentistService(dao.createDao('dentist'), jwtPayload),
       appointment: () => new AppointmentService(dao.createDao('appointment'), jwtPayload),
       child: () => new ChildService(dao.createDao('child'), jwtPayload),
-      course: () => new CourseService(dao.createDao('course'), jwtPayload)
+      course: () => new CourseService(dao.createDao('course'), jwtPayload),
+      transaction: () => new TransactionService(dao.createDao('transaction'))
     };
   }
 

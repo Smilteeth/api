@@ -58,6 +58,12 @@ export const childTable = sqliteTable('Child', {
   isActive: int('is_active', { mode: 'boolean' }).default(true)
 });
 
+export const completedQuestionary = sqliteTable('Completed_Questionary', {
+  completedQuestionaryId: int('completed_questionary_id').primaryKey({ autoIncrement: true }),
+  childId: int('child_id').references(() => childTable.childId),
+  completedDate: text('creation_date').default(sql`(CURRENT_DATE)`)
+});
+
 export const helpDeviceTable = sqliteTable('HelpDevice', {
   helpDeviceId: int('help_device_id').primaryKey({ autoIncrement: true }),
   helpDevice: text('help_device', {
@@ -214,6 +220,7 @@ export const theetTable = sqliteTable('Theet', {
 
 export const transactionTable = sqliteTable('Transaction', {
   transactionId: int('transaction_id').primaryKey({ autoIncrement: true }),
+  childId: int('child_id').references(() => childTable.childId),
   ammount: real('ammount').notNull(),
   creationDate: text('creation_date').default(sql`(CURRENT_DATE)`)
 });
@@ -260,6 +267,19 @@ export const lessonTable = sqliteTable('Lesson', {
   creationDate: text('creation_date').default(sql`(CURRENT_DATE)`),
   lastModificationDate: text('last_modification_date', { length: 26 }),
   isActive: int('is_active', { mode: 'boolean' }).default(true)
+});
+
+export const questionTable = sqliteTable('Question', {
+  questionId: int('question_id').primaryKey({ autoIncrement: true }),
+  lessonId: int('lesson_id').references(() => lessonTable.lessonId),
+  question: text('question', { length: 255 }),
+});
+
+export const answerTable = sqliteTable('Answer', {
+  answerId: int('answer_id').primaryKey({ autoIncrement: true }),
+  questionId: int('question_id').references(() => questionTable.questionId),
+  answer: text('answer', { length: 255 }),
+  isCorrect: int('is_correct', { mode: 'boolean' }).default(true)
 });
 
 export const childLessonTable = sqliteTable('ChildLesson', {
